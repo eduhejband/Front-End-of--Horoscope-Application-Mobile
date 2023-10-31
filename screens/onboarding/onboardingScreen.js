@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { View, BackHandler, SafeAreaView, StatusBar, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, Dimensions } from "react-native";
 import { Colors } from "../../constants/styles";
 import { useFocusEffect } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -19,21 +20,6 @@ const OnboardingScreen = ({ navigation }) => {
             return () => BackHandler.removeEventListener("hardwareBackPress", backAction);
         }, [])
     );
-
-    const checkUserData = async () => {
-        try {
-            const userData = await AsyncStorage.getItem('userData');
-            if (userData) {
-                navigation.navigate('BottomTabBar');
-            }
-        } catch (error) {
-            console.error("Failed to check user data:", error);
-        }
-    };
-
-    useEffect(() => {
-        checkUserData();
-    }, []);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -60,7 +46,6 @@ const OnboardingScreen = ({ navigation }) => {
         </SafeAreaView>
     );
 };
-
 
 const styles = StyleSheet.create({
     container: {

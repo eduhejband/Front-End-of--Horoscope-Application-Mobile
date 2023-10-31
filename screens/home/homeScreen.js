@@ -5,7 +5,7 @@ import { Colors, Fonts, Sizes, } from "../../constants/styles";
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 const { width, height } = Dimensions.get('window');
@@ -127,23 +127,26 @@ const topAstrologerList = [
     {
         id: '1',
         astrologerImage: require('../../assets/images/users/user1.png'),
-        astrologerName: 'K.N Rao',
-        astrologerSpeciality: 'Magic ball reader',
-        chargeOfMinute: 5,
+        astrologerName: 'Roberto Garcia',
+        astrologerSpeciality: 'Amor e Dinheiro',
+        astrologerPromotion:'50% de desconto',
+        astrologerScreen: 'AstrologerDetail1'
     },
     {
         id: '2',
         astrologerImage: require('../../assets/images/users/user2.png'),
-        astrologerName: 'Robert Hand',
-        astrologerSpeciality: 'Magic ball reader',
-        chargeOfMinute: 5,
+        astrologerName: 'Ricardo Silva',
+        astrologerSpeciality: 'Paz e Segurança',
+        astrologerPromotion:'Primeira consulta grátis',
+        astrologerScreen: 'AstrologerDetail2'
     },
     {
         id: '3',
         astrologerImage: require('../../assets/images/users/user3.png'),
-        astrologerName: 'Aliza Kelly',
-        astrologerSpeciality: 'Magic ball reader',
-        chargeOfMinute: 5,
+        astrologerName: 'Alice Miranda',
+        astrologerSpeciality: 'Amor e Saúde',
+        astrologerPromotion:'Pague 2 e receba 3 consultas',
+        astrologerScreen: 'AstrologerDetail3'
     },
 ];
 
@@ -183,16 +186,10 @@ const HomeScreen = ({ navigation, userData, dailyAdvice }) => {
         return (
             <View style={styles.buttonContainer}>
                 <TouchableOpacity 
-                    style={styles.button} 
-                    onPress={() => navigation.navigate('Onboarding')} 
-                >
-                    <Text style={styles.buttonText}>Retornar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
                     style={[styles.button, styles.buttonMarginTop]} 
                     onPress={handleEditInformation} 
                 >
-                    <Text style={styles.buttonText}>Editar informações</Text>
+                    <Text style={styles.buttonText}>Retornar</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -200,8 +197,8 @@ const HomeScreen = ({ navigation, userData, dailyAdvice }) => {
     
     const handleEditInformation = () => {
         Alert.alert(
-            "Editar informações",
-            "Você realmente deseja editar suas informações?",
+            "Retornar",
+            "Você realmente deseja retornar para o início?",
             [
                 {
                     text: "Cancelar",
@@ -211,12 +208,10 @@ const HomeScreen = ({ navigation, userData, dailyAdvice }) => {
                 {
                     text: "Confirmar", 
                     onPress: async () => {
-                        try {
-                            await AsyncStorage.removeItem('@userData');
-                            navigation.goBack(); // Retorna para a tela anterior
+                        try { 
+                            navigation.navigate('Onboarding'); // Retorna para a tela anterior
                         } catch (error) {
-                            console.error("Erro ao remover do AsyncStorage:", error);
-                            Alert.alert('Erro', 'Ocorreu um erro ao remover os dados. Por favor, tente novamente.');
+                            console.error(error);   
                         }
                     }
                 }
@@ -271,36 +266,30 @@ const HomeScreen = ({ navigation, userData, dailyAdvice }) => {
                         </Text>
                         <Text>
                             <Text style={{ ...Fonts.grayColor11Regular }}>
-                                Charges { }
+                                Promoção: { }
                             </Text>
                             <Text style={{ ...Fonts.blackColor11SemiBold }}>
-                                {`$`}{item.chargeOfMinute}/min
+                                {item.astrologerPromotion}
                             </Text>
                         </Text>
                     </View>
                     <View style={{ height: 2.0, backgroundColor: '#EEEEEE', marginVertical: Sizes.fixPadding - 5.0, }} />
-                    <View style={styles.viewProfileAndMessageTextWrapStyle}>
+                    <View style={{ ...styles.viewProfileAndMessageTextWrapStyle, alignItems: 'center', justifyContent: 'center' }}>
                         <Text
-                            onPress={() => navigation.push('AstrologerDetail', { item: item })}
+                            onPress={() => navigation.push(item.astrologerScreen, { item: item })}
                             style={{ ...Fonts.primaryColor10Bold }}
                         >
-                            View Profile
-                        </Text>
-                        <Text
-                            onPress={() => navigation.push('Message', { item: item })}
-                            style={{ ...Fonts.primaryColor10Bold }}
-                        >
-                            Message
+                            Ver Perfil
                         </Text>
                     </View>
-                </View>
+                    </View>
 
             </View>
         )
         return (
             <View>
                 <Text style={{ marginTop:20,marginHorizontal: Sizes.fixPadding * 2.0, ...Fonts.blackColor16Bold }}>
-                    Top Astrologer
+                    Nossos Astrólogos
                 </Text>
                 <FlatList
                     data={topAstrologerList}

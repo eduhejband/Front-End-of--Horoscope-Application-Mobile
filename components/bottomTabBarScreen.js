@@ -2,9 +2,7 @@ import React, { useCallback, useState } from "react";
 import { View, Text, TouchableOpacity, Animated, StyleSheet, Image, BackHandler, SafeAreaView, StatusBar } from "react-native";
 import { Colors, Fonts, Sizes } from "../constants/styles";
 import HomeScreen from "../screens/home/homeScreen";
-import NotificationScreen from "../screens/notification/notificationScreen";
-import { LinearGradient } from 'expo-linear-gradient';
-import MaskedView from '@react-native-masked-view/masked-view';
+
 import { useFocusEffect } from '@react-navigation/native';
 
 const BottomTabBarScreen = ({ navigation, route }) => {
@@ -43,11 +41,11 @@ const BottomTabBarScreen = ({ navigation, route }) => {
         <SafeAreaView style={{ flex: 1 }}>
             <StatusBar translucent={false} backgroundColor={Colors.primaryColor} />
             <View style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
-            {currentIndex == 1 ?
+           
                 <HomeScreen navigation={navigation} userData={userData} dailyAdvice={dailyAdvice} />
-                :
-                <NotificationScreen navigation={navigation} />
-            }
+                
+            
+            
                             
             </View>
             {

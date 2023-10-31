@@ -3,9 +3,8 @@ import {ImageBackground,View,Text,StyleSheet,TextInput,TouchableOpacity,Alert,} 
 import * as Animatable from 'react-native-animatable';
 import { TextInputMask } from 'react-native-masked-text';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAstroData } from '../getAstroData/getAstroData';
-import { useFocusEffect } from '@react-navigation/native';
+
 export default function SigninScreen({ navigation }) {
   const [name, setName] = useState('');
   const [birthplace, setBirthplace] = useState('');
@@ -89,111 +88,93 @@ export default function SigninScreen({ navigation }) {
     }
   }, [birthplace]);
 
-  const resetStates = () => {
-    setName('');
-    setBirthplace('');
-    setBirthDate('');
-    setBirthDateError(false);
-    setBirthplaceValidation(null);
-    setIsCheckingBirthplace(false);
-    setIsLoading(false);
+  
+async function handleRegister() {
+  setIsLoading(true);
+
+  if (!name || birthplaceValidation === false || !birthplace || !birthDate) {
+      Alert.alert('Campos obrigatórios', 'Por favor, preencha os campos corretamente.');
+      setIsLoading(false);
+      return;
+  }
+
+  if (isCheckingBirthplace) {
+      Alert.alert('Aguarde', 'Por favor, aguarde a verificação do local de nascimento.');
+      setIsLoading(false);
+      return;
+  }
+
+  if (birthplaceValidation === false) {
+      Alert.alert('Por favor, digite um local de nascimento válido');
+      setIsLoading(false);
+      return;
+  }
+
+  const birthDateParts = birthDate.split('/');
+  if (birthDateParts.length !== 3 || birthDateParts[1] > 12 || !isValidDayForMonth(birthDateParts[0], birthDateParts[1], birthDateParts[2])) {
+      Alert.alert('Erro', 'Por favor, insira uma data válida no formato DD/MM/AAAA.');
+      setIsLoading(false);
+      return;
+  }
+
+  const birthDateObject = new Date(parseInt(birthDateParts[2]), parseInt(birthDateParts[1]) - 1, parseInt(birthDateParts[0]));
+
+  if (!isValidDate(birthDateObject)) {
+      Alert.alert('Erro', 'Por favor, insira uma data válida.');
+      setIsLoading(false);
+      return;
+  }
+
+  if (isFutureDate(birthDateObject)) {
+      Alert.alert('Erro', 'A data de nascimento não pode ser no futuro.');
+      setIsLoading(false);
+      return;
+  }
+
+  const formattedBirthDate = `${birthDateParts[0]}.${birthDateParts[1]}.${birthDateParts[2]}`;
+  const formattedBirthplace = birthplace.split(',').map(item => item.trim()).join('.');
+
+  const userData = {
+      name: name,
+      data_nascimento: formattedBirthDate,
+      hora_nascimento: "12:00",
+      cidade_nascimento: formattedBirthplace
   };
 
-  useFocusEffect(
-    React.useCallback(() => {
-        const checkDataAndResetStates = async () => {
-            const userData = await AsyncStorage.getItem('@userData');
-            if (!userData) {
-                resetStates();
-            }
-        };
+  try {
+      const astroData = await Promise.race([
+          getAstroData(userData),
+          timeout(30000)  // 30 segundos
+      ]);
 
-        checkDataAndResetStates();
+      console.log("Dados recebidos da API getAstroData:", astroData);
 
-        return () => {
-            // Qualquer limpeza que você queira fazer quando a tela perder o foco
-        };
-    }, [])
-  );
-
-  async function handleRegister() {
-    setIsLoading(true);
-
-    if (!name || birthplaceValidation === false || !birthplace || !birthDate) {
-        Alert.alert('Campos obrigatórios', 'Por favor, preencha os campos corretamente.');
+      if (!astroData || astroData.trim() === "") {
+        console.log("Erro: Dados astrológicos inválidos ou daily_advice não encontrado.");
+        Alert.alert('Erro', 'Não foi possível obter os dados astrológicos. Por favor, tente novamente.');
         setIsLoading(false);
         return;
-    }
+      }
 
-    if (isCheckingBirthplace) {
-        Alert.alert('Aguarde', 'Por favor, aguarde a verificação do local de nascimento.');
-        setIsLoading(false);
-        return;
-    }
+      console.log("Chamando navigateBasedOnSunSign.");
+      navigation.navigate(`zodiacHoroscopeFirstEscorpiaoScreen`, { 
+        item: {astroData: astroData },
+        userData: userData 
+    });
 
-    if (birthplaceValidation === false) {
-        Alert.alert('Por favor, digite um local de nascimento válido');
-        setIsLoading(false);
-        return;
-    }
-
-    const birthDateParts = birthDate.split('/');
-    if (birthDateParts.length !== 3 || birthDateParts[1] > 12 || !isValidDayForMonth(birthDateParts[0], birthDateParts[1], birthDateParts[2])) {
-        Alert.alert('Erro', 'Por favor, insira uma data válida no formato DD/MM/AAAA.');
-        setIsLoading(false);
-        return;
-    }
-
-    const birthDateObject = new Date(parseInt(birthDateParts[2]), parseInt(birthDateParts[1]) - 1, parseInt(birthDateParts[0]));
-
-    if (!isValidDate(birthDateObject)) {
-        Alert.alert('Erro', 'Por favor, insira uma data válida.');
-        setIsLoading(false);
-        return;
-    }
-
-    if (isFutureDate(birthDateObject)) {
-        Alert.alert('Erro', 'A data de nascimento não pode ser no futuro.');
-        setIsLoading(false);
-        return;
-    }
-
-    const formattedBirthDate = `${birthDateParts[0]}.${birthDateParts[1]}.${birthDateParts[2]}`;
-    const formattedBirthplace = birthplace.split(',').map(item => item.trim()).join('.');
-
-    const userData = {
-        name: name,
-        data_nascimento: formattedBirthDate,
-        hora_nascimento: "12:00",
-        cidade_nascimento: formattedBirthplace
-    };
-
-    try {
-        const result = await Promise.race([
-            getAstroData(userData),
-            timeout(30000)
-        ]);
-
-        if (!result) {
-            Alert.alert('Erro', 'Não foi possível obter os dados astrológicos. Por favor, tente novamente.');
-            return;
-        }
-
-        await AsyncStorage.setItem('@userData', JSON.stringify(userData));
-        Alert.alert('Sucesso', 'Informações salvas com sucesso!');
-        navigation.navigate('BottomTabBar', { userData: userData, dailyAdvice: result });
-
-    } catch (error) {
-        setIsLoading(false);
-        if (error.message === "Tempo limite excedido") {
-            Alert.alert('Erro', 'Ocorreu algum erro de conexão.');
-            navigation.navigate('HomeScreen'); // ou o nome da tela inicial que você deseja navegar
-        } else {
-            console.error("Erro ao buscar dados astrológicos:", error);
-            Alert.alert('Erro', 'Ocorreu um erro ao buscar os dados. Por favor, tente novamente.');
-        }
-    }
+  } catch (error) {
+      setIsLoading(false);
+      if (error.message === "Tempo limite excedido") {
+          Alert.alert('Erro', 'Ocorreu algum erro de conexão.');
+      } else {
+          console.error("Erro ao buscar dados astrológicos:", error);
+          Alert.alert('Erro', 'Ocorreu um erro ao buscar os dados. Por favor, tente novamente.');
+      }
+  } finally {
+      setIsLoading(false);
+  }
 }
+
 
 function timeout(ms) {
     return new Promise((resolve, reject) => {

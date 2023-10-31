@@ -16,16 +16,23 @@ import zodiacHoroscopeDetailSagitarioScreen from "./screens/zodiacDailyHoroscope
 import zodiacHoroscopeDetailCapricornioScreen from "./screens/zodiacDailyHoroscopeDetail/zodiacHoroscopeDetailCapricornioScreen";
 import zodiacHoroscopeDetailAquarioScreen from "./screens/zodiacDailyHoroscopeDetail/zodiacHoroscopeDetailAquarioScreen";
 import zodiacHoroscopeDetailPeixesScreen from "./screens/zodiacDailyHoroscopeDetail/zodiacHoroscopeDetailPeixesScreen";
-import BirthChartCalculatorScreen from "./screens/birthChartCalculator/birthChartCalculatorScreen";
-import BirthHoroscopeScreen from "./screens/birthHoroscope/birthHoroscopeScreen";
-import HoroscopeDetailScreen from "./screens/horoscopeDetail/horoscopeDetailScreen";
-import AstrologerDetailScreen from "./screens/astrologerDetail/astrologerDetailScreen";
-import MessageScreen from "./screens/message/messageScreen";
-import AstrologersScreen from "./screens/astrologers/astrologersScreen";
-import CompatibilityScreen from "./screens/compatibility/compatibilityScreen";
-import CompatibilityDetailScreen from "./screens/compatibilityDetail/compatibilityDetailScreen";
-import NumerologyScreen from "./screens/numerology/numerologyScreen";
-import NumeroloryDetailScreen from "./screens/numerologyDetail/numeroloryDetailScreen";
+import AstrologerDetailScreen1 from "./screens/astrologerDetail/astrologerDetailScreen1";
+import AstrologerDetailScreen2 from "./screens/astrologerDetail/astrologerDetailScreen2";
+import AstrologerDetailScreen3 from "./screens/astrologerDetail/astrologerDetailScreen3";
+
+import zodiacHoroscopeFirstAriesScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstAriesScreen.js";
+import zodiacHoroscopeFirstAquarioScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstAquarioScreen.js";
+import zodiacHoroscopeFirstCancerScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstCancerScreen.js";
+import zodiacHoroscopeFirstCapricornioScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstCapricornioScreen.js";
+import zodiacHoroscopeFirstEscorpiaoScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstEscorpiaoScreen.js";
+import zodiacHoroscopeFirstGemeosScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstGemeosScreen.js";
+import zodiacHoroscopeFirstLeaoScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstLeaoScreen.js";
+import zodiacHoroscopeFirstLibraScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstLibraScreen.js";
+import zodiacHoroscopeFirstPeixesScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstPeixesScreen.js";
+import zodiacHoroscopeFirstSagitarioScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstSagitarioScreen.js";
+import zodiacHoroscopeFirstTouroScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstTouroScreen.js";
+import zodiacHoroscopeFirstVirgemScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstVirgemScreen.js";
+
 
 
 import SplashScreen from "./screens/splashScreen";
@@ -65,16 +72,24 @@ const App = () => {
         <Stack.Screen name="zodiacHoroscopeDetailAquarioScreen" component={zodiacHoroscopeDetailAquarioScreen} />
         <Stack.Screen name="zodiacHoroscopeDetailPeixesScreen" component={zodiacHoroscopeDetailPeixesScreen} />
 
-        <Stack.Screen name="BirthChartCalculator" component={BirthChartCalculatorScreen} />
-        <Stack.Screen name="BirthHoroscope" component={BirthHoroscopeScreen} />
-        <Stack.Screen name="HoroscopeDetail" component={HoroscopeDetailScreen} />
-        <Stack.Screen name="AstrologerDetail" component={AstrologerDetailScreen} />
-        <Stack.Screen name="Message" component={MessageScreen} />
-        <Stack.Screen name="Astrologers" component={AstrologersScreen} />
-        <Stack.Screen name="Compatibility" component={CompatibilityScreen} />
-        <Stack.Screen name="CompatibilityDetail" component={CompatibilityDetailScreen} />
-        <Stack.Screen name="Numerology" component={NumerologyScreen} />
-        <Stack.Screen name="NumerologyDetail" component={NumeroloryDetailScreen} />
+        <Stack.Screen name="zodiacHoroscopeFirstAriesScreen" component={zodiacHoroscopeFirstAriesScreen} />
+        <Stack.Screen name="zodiacHoroscopeFirstAquarioScreen" component={zodiacHoroscopeFirstAquarioScreen} />
+        <Stack.Screen name="zodiacHoroscopeFirstCancerScreen" component={zodiacHoroscopeFirstCancerScreen} />
+        <Stack.Screen name="zodiacHoroscopeFirstCapricornioScreen" component={zodiacHoroscopeFirstCapricornioScreen} />
+        <Stack.Screen name="zodiacHoroscopeFirstEscorpiaoScreen" component={zodiacHoroscopeFirstEscorpiaoScreen} />
+        <Stack.Screen name="zodiacHoroscopeFirstGemeosScreen" component={zodiacHoroscopeFirstGemeosScreen} />
+        <Stack.Screen name="zodiacHoroscopeFirstLeaoScreen" component={zodiacHoroscopeFirstLeaoScreen} />
+        <Stack.Screen name="zodiacHoroscopeFirstLibraScreen" component={zodiacHoroscopeFirstLibraScreen} />
+        <Stack.Screen name="zodiacHoroscopeFirstPeixesScreen" component={zodiacHoroscopeFirstPeixesScreen} />
+        <Stack.Screen name="zodiacHoroscopeFirstSagitarioScreen" component={zodiacHoroscopeFirstSagitarioScreen} />
+        <Stack.Screen name="zodiacHoroscopeFirstTouroScreen" component={zodiacHoroscopeFirstTouroScreen} />
+        <Stack.Screen name="zodiacHoroscopeFirstVirgemScreen" component={zodiacHoroscopeFirstVirgemScreen} />
+        
+        <Stack.Screen name="AstrologerDetail1" component={AstrologerDetailScreen1} />
+        <Stack.Screen name="AstrologerDetail2" component={AstrologerDetailScreen2} />
+        <Stack.Screen name="AstrologerDetail3" component={AstrologerDetailScreen3} />
+       
+       
       </Stack.Navigator>
     </NavigationContainer>
   );
