@@ -1,62 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
     SafeAreaView, View, Dimensions, ScrollView, TouchableOpacity,
     StatusBar, Image, StyleSheet, Text
 } from "react-native";
 import { Colors, Fonts, Sizes } from "../../constants/styles";
-import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import CircularProgress from 'react-native-circular-progress-indicator';
-import axios from 'axios';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-const ZodiacDailyHoroscopeDetailScreen = ({ navigation, route }) => {
-    const { item, userData } = route.params;
-
-    const [userDetails, setUserDetails] = useState(userData);
-    const [astroData, setAstroData] = useState({});
-    const [dailyAdvice, setDailyAdvice] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);   // State for loading
-    const [error, setError] = useState(null);           // State for error messages
-
-    useEffect(() => {
-        if (userDetails) {
-            getAstroData();
-        }
-    }, [userDetails]);
-
-    const getAstroData = async () => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            const response = await axios.post('http://192.168.20.114:5000/mapa_astral', {
-                data_nascimento: userDetails?.data_nascimento,
-                hora_nascimento: userDetails?.hora_nascimento,
-                cidade_nascimento: userDetails?.cidade_nascimento
-            });
-    
-            if (response.data && response.data.daily_advice) {
-                setAstroData(response.data);
-                setDailyAdvice(response.data.daily_advice);
-            }
-            
-             else {
-                if (response.data) {
-                    console.error("dailyAdvice missing in the response. API Response:", response.data);
-                } else {
-                    console.error("Response from API is empty or not as expected.");
-                }
-            }
-        } catch (err) {
-            console.error('Error fetching astro data:', err);
-            setError('Erro ao buscar dados astrológicos.');
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-
+const ZodiacFirstHoroscopeDetailScreen = ({ navigation, route }) => {
+    const { dailyAdvice, conselhoProfissional, conselhoSaude, conselhoAfetivo, name } = route.params;
+    console.log("cheguei aqui 1",name);
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
             <StatusBar backgroundColor={Colors.secondaryColor} />
@@ -65,16 +20,20 @@ const ZodiacDailyHoroscopeDetailScreen = ({ navigation, route }) => {
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: Sizes.fixPadding * 2.0, }}
-                > 
+                >
                     {todaysLuckDetail()}
                 </ScrollView>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Onboarding')}>
+                        <Text style={styles.buttonText}>Voltar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BottomTabBar', {name:name})}>
+                        <Text style={styles.buttonText}>Outras Informações</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Onboarding')}>
-                <Text style={styles.buttonText}>Voltar</Text>
-            </TouchableOpacity>
         </SafeAreaView>
     );
-
     function todaysLuckDetail() {
         return (
             <View style={{ marginTop:30,marginHorizontal: Sizes.fixPadding * 2.0, }}>
@@ -87,67 +46,28 @@ const ZodiacDailyHoroscopeDetailScreen = ({ navigation, route }) => {
 
     function loveLuckHealthAndMoneyInfo() {
         return (
-            <View style={{}}>
-                <View style={{ marginVertical: Sizes.fixPadding + 2.0, justifyContent: 'space-between', flexDirection: 'row', marginBottom:30 }}>
-                {progressBarWithPercentage({ title: 'Amor', percentage: 80, startColor: '#FFAAAA', endColor: Colors.redColor })}
-                {progressBarWithPercentage({ title: 'Saúde', percentage: 75, startColor: '#FFF6A6', endColor: Colors.yellowColor })}
-                {progressBarWithPercentage({ title: 'Riqueza', percentage: 85, startColor: '#CCECBA', endColor: Colors.greenColor })}
-
-                </View>
+            <View>
                 {loveLuckHealthAndMoneyDetail({
                     title: 'Riqueza',
                     icon: require('../../assets/images/icons/money.png'),
                     iconColor: Colors.greenColor,
-                    description: 'Os taurinos, com sua natureza prática e valorização da segurança, têm uma abordagem cautelosa e metódica em relação à riqueza. São muitas vezes atraídos por investimentos seguros e de longo prazo, como imóveis ou ações de empresas bem estabelecidas.',
+                    description: conselhoProfissional,
                     titleStyle: { ...Fonts.greenColor14SemiBold }
                 })}
-
                 {loveLuckHealthAndMoneyDetail({
                     title: 'Amor',
                     icon: require('../../assets/images/icons/love.png'),
                     iconColor: Colors.redColor,
-                    description: 'Os taurinos são conhecidos por sua natureza estável, leal e sensível. No amor, eles buscam segurança, conforto e uma conexão física e emocional profunda. São parceiros extremamente leais e confiáveis, que valorizam a estabilidade e a previsibilidade em um relacionamento. ',
+                    description: conselhoAfetivo,
                     titleStyle: { ...Fonts.redColor14SemiBold }
                 })}
                 {loveLuckHealthAndMoneyDetail({
                     title: 'Saúde',
                     icon: require('../../assets/images/icons/health.png'),
                     iconColor: Colors.yellowColor,
-                    description: 'Os taurinos devem ficar atentos com dores de garganta, inchaços das amígdalas, laringites, abcessos, problemas relacionados com sufocação e estrangulamento. O planeta Vênus, relacionado com o signo, em mau aspecto, causa problemas de gota, inchaços e tumores, doenças venéreas, problemas sexuais e varizes.',
+                    description: conselhoSaude,
                     titleStyle: { ...Fonts.yellowColor14SemiBold }
                 })}
-
-                {loveLuckHealthAndMoneyDetail({
-                    title: 'Pontos Positivos',
-                    icon: require('../../assets/images/icons/positividade.png'),
-                    iconColor: Colors.blueColor,
-                    description: 'Determinado, leal e prático. Valoriza conforto e segurança.',
-                    titleStyle: { ...Fonts.blueColor14SemiBold }
-                })}
-
-                {loveLuckHealthAndMoneyDetail({
-                    title: 'Elemento',
-                    icon: require('../../assets/images/icons/elementosIcon.png'),
-                    iconColor: Colors.orangeColor,
-                    description: 'Terra: Confiável, persistente e busca estabilidade.',
-                    titleStyle: { ...Fonts.orangeColor14SemiBold }
-                })}
-
-                {loveLuckHealthAndMoneyDetail({
-                    title: 'Planeta Regente',
-                    icon: require('../../assets/images/icons/planetIcon.png'),
-                    iconColor: Colors.purpleColor,
-                    description: 'Vênus: Amor, beleza e atração. Valoriza harmonia.',
-                    titleStyle: { ...Fonts.purpleColor14SemiBold }
-                })}
-
-                {loveLuckHealthAndMoneyDetail({
-                    title: 'Pedras Preciosas',
-                    icon: require('../../assets/images/icons/pedraIcon.png'),
-                    description: 'Esmeralda para cura, Quartzo rosa para amor e Ágata para força.',
-                    titleStyle: { ...Fonts.cyanColor14SemiBold }
-                })}
-                
             </View>
         )
     }
@@ -193,8 +113,7 @@ const ZodiacDailyHoroscopeDetailScreen = ({ navigation, route }) => {
         )
     }
 
-
-    function header() {
+    function header(dailyAdvice) {
         return (
             <LinearGradient
                 style={styles.headerWrapStyle}
@@ -202,7 +121,7 @@ const ZodiacDailyHoroscopeDetailScreen = ({ navigation, route }) => {
             >
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={{ textAlign: 'center', flex: 1, ...Fonts.whiteColor14SemiBold }}>
-                        {dailyAdvice}
+                        {dailyAdvice ? dailyAdvice : 'Carregando conselho...'}
                     </Text>
                 </View>
             </LinearGradient>
@@ -258,21 +177,25 @@ const styles = StyleSheet.create({
         paddingTop: Sizes.fixPadding - 5.0,
         paddingBottom: Sizes.fixPadding,
     },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginHorizontal: Sizes.fixPadding * 2.0,
+        marginBottom: 5,
+    },
     button: {
         backgroundColor: '#003366',
         borderRadius: 4,
         paddingVertical: 8,
-        width: '100%',
-        marginTop: 12,
+        width: '48%', // Distribui os botões em 48% da largura da tela
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom:5
-      },
-      buttonText: {
-        fontSize: 18,
-        color: '#fff',
-        fontWeight: 'bold',
-      }
+        marginTop: 12,
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
+    }
 });
 
-export default ZodiacDailyHoroscopeDetailScreen;
+export default ZodiacFirstHoroscopeDetailScreen;

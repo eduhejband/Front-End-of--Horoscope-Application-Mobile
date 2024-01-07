@@ -20,20 +20,9 @@ import AstrologerDetailScreen1 from "./screens/astrologerDetail/astrologerDetail
 import AstrologerDetailScreen2 from "./screens/astrologerDetail/astrologerDetailScreen2";
 import AstrologerDetailScreen3 from "./screens/astrologerDetail/astrologerDetailScreen3";
 
-import zodiacHoroscopeFirstAriesScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstAriesScreen.js";
-import zodiacHoroscopeFirstAquarioScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstAquarioScreen.js";
-import zodiacHoroscopeFirstCancerScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstCancerScreen.js";
-import zodiacHoroscopeFirstCapricornioScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstCapricornioScreen.js";
-import zodiacHoroscopeFirstEscorpiaoScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstEscorpiaoScreen.js";
-import zodiacHoroscopeFirstGemeosScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstGemeosScreen.js";
-import zodiacHoroscopeFirstLeaoScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstLeaoScreen.js";
-import zodiacHoroscopeFirstLibraScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstLibraScreen.js";
-import zodiacHoroscopeFirstPeixesScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstPeixesScreen.js";
-import zodiacHoroscopeFirstSagitarioScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstSagitarioScreen.js";
-import zodiacHoroscopeFirstTouroScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstTouroScreen.js";
-import zodiacHoroscopeFirstVirgemScreen from "./screens/zodiacDailyHoroscopeFirstScreen/zodiacHoroscopeFirstVirgemScreen.js";
+import zodiacHoroscopeFirstEscorpiaoScreen from "./screens/zodiacFirstScreen/zodiacHoroscopeFirstEscorpiaoScreen.js";
 
-
+import AstroProfile from "./screens/astral_map/astral_map.js"
 
 import SplashScreen from "./screens/splashScreen";
 import OnboardingScreen from "./screens/onboarding/onboardingScreen";
@@ -72,23 +61,13 @@ const App = () => {
         <Stack.Screen name="zodiacHoroscopeDetailAquarioScreen" component={zodiacHoroscopeDetailAquarioScreen} />
         <Stack.Screen name="zodiacHoroscopeDetailPeixesScreen" component={zodiacHoroscopeDetailPeixesScreen} />
 
-        <Stack.Screen name="zodiacHoroscopeFirstAriesScreen" component={zodiacHoroscopeFirstAriesScreen} />
-        <Stack.Screen name="zodiacHoroscopeFirstAquarioScreen" component={zodiacHoroscopeFirstAquarioScreen} />
-        <Stack.Screen name="zodiacHoroscopeFirstCancerScreen" component={zodiacHoroscopeFirstCancerScreen} />
-        <Stack.Screen name="zodiacHoroscopeFirstCapricornioScreen" component={zodiacHoroscopeFirstCapricornioScreen} />
+
         <Stack.Screen name="zodiacHoroscopeFirstEscorpiaoScreen" component={zodiacHoroscopeFirstEscorpiaoScreen} />
-        <Stack.Screen name="zodiacHoroscopeFirstGemeosScreen" component={zodiacHoroscopeFirstGemeosScreen} />
-        <Stack.Screen name="zodiacHoroscopeFirstLeaoScreen" component={zodiacHoroscopeFirstLeaoScreen} />
-        <Stack.Screen name="zodiacHoroscopeFirstLibraScreen" component={zodiacHoroscopeFirstLibraScreen} />
-        <Stack.Screen name="zodiacHoroscopeFirstPeixesScreen" component={zodiacHoroscopeFirstPeixesScreen} />
-        <Stack.Screen name="zodiacHoroscopeFirstSagitarioScreen" component={zodiacHoroscopeFirstSagitarioScreen} />
-        <Stack.Screen name="zodiacHoroscopeFirstTouroScreen" component={zodiacHoroscopeFirstTouroScreen} />
-        <Stack.Screen name="zodiacHoroscopeFirstVirgemScreen" component={zodiacHoroscopeFirstVirgemScreen} />
-        
+      
         <Stack.Screen name="AstrologerDetail1" component={AstrologerDetailScreen1} />
         <Stack.Screen name="AstrologerDetail2" component={AstrologerDetailScreen2} />
         <Stack.Screen name="AstrologerDetail3" component={AstrologerDetailScreen3} />
-       
+        <Stack.Screen name="AstroProfile" component={AstroProfile} />
        
       </Stack.Navigator>
     </NavigationContainer>

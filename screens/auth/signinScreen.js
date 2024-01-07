@@ -142,26 +142,32 @@ async function handleRegister() {
   };
 
   try {
-      const astroData = await Promise.race([
-          getAstroData(userData),
-          timeout(30000)  // 30 segundos
-      ]);
+    const astroData = await Promise.race([
+        getAstroData(userData),
+        timeout(30000)  // 30 segundos
+    ]);
 
-      console.log("Dados recebidos da API getAstroData:", astroData);
+    console.log("Dados recebidos da API getAstroData:", astroData);
 
-      if (!astroData || astroData.trim() === "") {
-        console.log("Erro: Dados astrológicos inválidos ou daily_advice não encontrado.");
-        Alert.alert('Erro', 'Não foi possível obter os dados astrológicos. Por favor, tente novamente.');
+    // Verifique se os dados obtidos são válidos e completos
+    if (astroData && astroData.astroData && astroData.dailyAdvice && astroData.conselhosData) {
+      console.log("Navegando para zodiacHoroscopeFirstEscorpiaoScreen com dados carregados.\n\n\n",name);
+      navigation.navigate('zodiacHoroscopeFirstEscorpiaoScreen', { 
+          astroData: astroData.astroData,
+          dailyAdvice: astroData.dailyAdvice,
+          conselhoProfissional: astroData.conselhosData.profissional,
+          conselhoSaude: astroData.conselhosData.saude,
+          conselhoAfetivo: astroData.conselhosData.afetivo,
+          userData: userData,
+          name: name 
+      });
+      
+    } else {
+        console.log("Erro: Dados astrológicos incompletos ou inválidos.");
+        Alert.alert('Erro', 'Não foi possível obter os dados astrológicos completos. Por favor, tente novamente.');
         setIsLoading(false);
         return;
-      }
-
-      console.log("Chamando navigateBasedOnSunSign.");
-      navigation.navigate(`zodiacHoroscopeFirstEscorpiaoScreen`, { 
-        item: {astroData: astroData },
-        userData: userData 
-    });
-
+    }
   } catch (error) {
       setIsLoading(false);
       if (error.message === "Tempo limite excedido") {

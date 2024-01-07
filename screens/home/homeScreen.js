@@ -150,13 +150,12 @@ const topAstrologerList = [
     },
 ];
 
-const HomeScreen = ({ navigation, userData, dailyAdvice }) => {
+const HomeScreen = ({ navigation, userData, dailyAdvice, name }) => {
 
     // Definir userData em um estado local
     const [userDetails, setUserDetails] = useState(userData);
-
+    
     const [state, setState] = useState({ currentSelectedZodiacSign: zodiacSignsList[9].zodiacSignName, })
-
     const updateState = (data) => setState((state) => ({ ...state, ...data }))
     
 
@@ -167,15 +166,23 @@ const HomeScreen = ({ navigation, userData, dailyAdvice }) => {
     }, [userDetails]);
     const getAstroData = async () => {
         try {
-            const response = await axios.post('http://192.168.20.114:5000/mapa_astral', {
-                data_nascimento: userDetails?.data_nascimento,
-                hora_nascimento: userDetails?.hora_nascimento,
-                cidade_nascimento: userDetails?.cidade_nascimento
+            const response = await axios.post('https://serverteste-43462c33197a.herokuapp.com/mapa_astral', {
+                data_nascimento: userData?.data_nascimento,
+                hora_nascimento: userData?.hora_nascimento,
+                cidade_nascimento: userData?.cidade_nascimento
+            }, {
+                headers: {
+                    'Authorization': `YXqGNQOaNQdNkrsIP8M6C02Nb6P2l4MlwvU1rCENxtbnVAKvVQkoOD04pJ4YAda8k0QVsLZBkTpY0F5zKLx6xRc5HWjF3d7ULrHYD7q8Djhol9Fp9Mrxxzrp0VFjxUcs1dCjKIuQyX8BcLl6yMXlaIrJKpS6NOxRCqd2F7655bd13e2bc9e` // Assuming a Bearer token; modify as needed
+                }
             });
     
+            if (response.data) {
+                return response.data.daily_advice;
+            }
         } catch (error) {
             console.error('Error fetching astro data:', error);
         }
+        return null;
     };
 
     const {
@@ -537,7 +544,7 @@ function header() {
         >
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text style={{ textAlign: 'center', flex: 1, ...Fonts.whiteColor14SemiBold }}>
-                    {dailyAdvice}
+                    {name}
                 </Text>
             </View>
         </LinearGradient>

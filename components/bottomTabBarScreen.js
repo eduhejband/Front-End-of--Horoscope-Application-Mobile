@@ -9,11 +9,12 @@ const BottomTabBarScreen = ({ navigation, route }) => {
 
     const userData = route.params?.userData;
     const dailyAdvice = route.params?.dailyAdvice;
+    const {name} = route.params;
     const backAction = () => {
         backClickCount == 1 ? BackHandler.exitApp() : _spring();
         return true;
     }
-
+    console.log ("Cheguei aqui 2", name);
     useFocusEffect(
         useCallback(() => {
             BackHandler.addEventListener("hardwareBackPress", backAction);
@@ -42,7 +43,7 @@ const BottomTabBarScreen = ({ navigation, route }) => {
             <StatusBar translucent={false} backgroundColor={Colors.primaryColor} />
             <View style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
            
-                <HomeScreen navigation={navigation} userData={userData} dailyAdvice={dailyAdvice} />
+                <HomeScreen navigation={navigation} userData={userData} dailyAdvice={dailyAdvice} name = {name} />
                 
             
             

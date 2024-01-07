@@ -5,6 +5,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import { ImageBackground } from 'react-native';
+import { Svg } from 'react-native-svg';
+
 const { width, height } = Dimensions.get('window');
 
 const luckyColorsList = ['white', 'yellow', 'green'];
