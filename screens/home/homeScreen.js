@@ -150,7 +150,7 @@ const topAstrologerList = [
     },
 ];
 
-const HomeScreen = ({ navigation, userData, dailyAdvice, name }) => {
+const HomeScreen = ({ navigation, userData, name, astroData}) => {
 
     // Definir userData em um estado local
     const [userDetails, setUserDetails] = useState(userData);
@@ -314,6 +314,7 @@ const HomeScreen = ({ navigation, userData, dailyAdvice, name }) => {
     }
 
     function horoscopesInfo() {
+        
         return (
             <View style={{ marginHorizontal: Sizes.fixPadding * 2.0, }}>
                 <Text style={{ marginBottom: Sizes.fixPadding * 2.0, ...Fonts.blackColor16Bold }}>
@@ -322,7 +323,7 @@ const HomeScreen = ({ navigation, userData, dailyAdvice, name }) => {
                 <View style={{ flexDirection: 'row', alignItems: 'center', }}>
                     <TouchableOpacity
                         activeOpacity={0.9}
-                        onPress={() => navigation.push('HoroscopeDetail')}
+                        onPress={() => navigation.push('AstroProfile' , {astroData: astroData})}
                         style={{ flex: 1 }}
                     >
                         <ImageBackground
@@ -335,14 +336,14 @@ const HomeScreen = ({ navigation, userData, dailyAdvice, name }) => {
                             borderRadius={Sizes.fixPadding - 5.0}
                         >
                             <Text style={{ ...Fonts.whiteColor12Bold }}>
-                                August Horoscopes
+                                Mapa Astral 
                             </Text>
                         </ImageBackground>
                     </TouchableOpacity>
                     <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding + 5.0, }}>
                         <TouchableOpacity
                             activeOpacity={0.9}
-                            onPress={() => navigation.push('HoroscopeDetail')}
+                            onPress={() => navigation.push('AstroProfile' , {astroData: astroData})}
                         >
                             <ImageBackground
                                 source={require('../../assets/images/horoscopes/chinese_zodiac_horoscope.png')}

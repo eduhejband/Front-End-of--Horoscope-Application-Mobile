@@ -147,11 +147,11 @@ async function handleRegister() {
         timeout(30000)  // 30 segundos
     ]);
 
-    console.log("Dados recebidos da API getAstroData:", astroData);
+    console.log("Dados recebidos da API getAstroData:", astroData.astroData);
 
     // Verifique se os dados obtidos são válidos e completos
     if (astroData && astroData.astroData && astroData.dailyAdvice && astroData.conselhosData) {
-      console.log("Navegando para zodiacHoroscopeFirstEscorpiaoScreen com dados carregados.\n\n\n",name);
+      console.log("Navegando para zodiacHoroscopeFirstEscorpiaoScreen com dados carregados.\n\n\n");
       navigation.navigate('zodiacHoroscopeFirstEscorpiaoScreen', { 
           astroData: astroData.astroData,
           dailyAdvice: astroData.dailyAdvice,

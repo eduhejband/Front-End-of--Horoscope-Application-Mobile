@@ -9,19 +9,17 @@ const BottomTabBarScreen = ({ navigation, route }) => {
 
     const userData = route.params?.userData;
     const dailyAdvice = route.params?.dailyAdvice;
-    const {name} = route.params;
+    const {name,astroData} = route.params;
     const backAction = () => {
         backClickCount == 1 ? BackHandler.exitApp() : _spring();
         return true;
     }
-    console.log ("Cheguei aqui 2", name);
     useFocusEffect(
         useCallback(() => {
             BackHandler.addEventListener("hardwareBackPress", backAction);
             return () => BackHandler.removeEventListener("hardwareBackPress", backAction);
         }, [backAction])
     );
-
     function _spring() {
         updateState({ backClickCount: 1 });
         setTimeout(() => {
@@ -43,7 +41,7 @@ const BottomTabBarScreen = ({ navigation, route }) => {
             <StatusBar translucent={false} backgroundColor={Colors.primaryColor} />
             <View style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
            
-                <HomeScreen navigation={navigation} userData={userData} dailyAdvice={dailyAdvice} name = {name} />
+                <HomeScreen navigation={navigation} userData={userData} dailyAdvice={dailyAdvice} name = {name} astroData={astroData}/>
                 
             
             
