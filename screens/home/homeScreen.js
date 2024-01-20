@@ -150,7 +150,7 @@ const topAstrologerList = [
     },
 ];
 
-const HomeScreen = ({ navigation, userData, name, astroData}) => {
+const HomeScreen = ({ navigation, userData, name, astroData, chineseZodiac}) => {
 
     // Definir userData em um estado local
     const [userDetails, setUserDetails] = useState(userData);
@@ -318,7 +318,7 @@ const HomeScreen = ({ navigation, userData, name, astroData}) => {
         return (
             <View style={{ marginHorizontal: Sizes.fixPadding * 2.0, }}>
                 <Text style={{ marginBottom: Sizes.fixPadding * 2.0, ...Fonts.blackColor16Bold }}>
-                    Horoscopes
+                    Horóscopos
                 </Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center', }}>
                     <TouchableOpacity
@@ -343,41 +343,24 @@ const HomeScreen = ({ navigation, userData, name, astroData}) => {
                     <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding + 5.0, }}>
                         <TouchableOpacity
                             activeOpacity={0.9}
-                            onPress={() => navigation.push('AstroProfile' , {astroData: astroData})}
+                            onPress={() => navigation.push('chineseDetailScreen' , {chineseZodiac: chineseZodiac})}
                         >
                             <ImageBackground
                                 source={require('../../assets/images/horoscopes/chinese_zodiac_horoscope.png')}
                                 style={{
-                                    height: (height / 4.7) / 2.0 - 10.0,
-                                    marginBottom: Sizes.fixPadding,
-                                    padding: Sizes.fixPadding - 5.0
+                                    height: height / 4.7,
+                                    padding: Sizes.fixPadding,
+                                    justifyContent: 'flex-end',
                                 }}
                                 borderRadius={Sizes.fixPadding - 5.0}
                             >
-                                <Text style={{ ...Fonts.whiteColor10Bold }}>
-                                    Chinese Zodiac Horoscopes
+                                <Text style={{ ...Fonts.whiteColor12Bold  }}>
+                                    Signo Chinês
                                 </Text>
                             </ImageBackground>
                         </TouchableOpacity>
 
-                        <TouchableOpacity
-                            activeOpacity={0.9}
-                            onPress={() => navigation.push('HoroscopeDetail')}
-                        >
-                            <ImageBackground
-                                source={require('../../assets/images/horoscopes/year_horoscope.png')}
-                                style={{
-                                    height: (height / 4.7) / 2.0 - 10.0,
-                                    marginTop: Sizes.fixPadding,
-                                    padding: Sizes.fixPadding - 5.0
-                                }}
-                                borderRadius={Sizes.fixPadding - 5.0}
-                            >
-                                <Text style={{ ...Fonts.whiteColor10Bold }}>
-                                    2021 Horoscopes
-                                </Text>
-                            </ImageBackground>
-                        </TouchableOpacity>
+                        
                     </View>
                     <View style={{ flex: 1.2 }}>
                         {horoscopesShort({
@@ -421,7 +404,7 @@ const HomeScreen = ({ navigation, userData, name, astroData}) => {
     }
 
     function banners() {
-
+        
         const renderItem = ({ item }) => (
             <View style={{marginTop:30, marginRight: Sizes.fixPadding * 2.0, }}>
                 <ImageBackground
@@ -537,20 +520,33 @@ const HomeScreen = ({ navigation, userData, name, astroData}) => {
         )
     }
 
-function header() {
-    return (
-        <LinearGradient
-            style={styles.headerWrapStyle}
-            colors={[Colors.secondaryColor, Colors.primaryColor]}
-        >
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ textAlign: 'center', flex: 1, ...Fonts.whiteColor14SemiBold }}>
-                    {name}
-                </Text>
-            </View>
-        </LinearGradient>
-    );
-}
+    function getGreeting() {
+        const hour = new Date().getHours();
+        if (hour < 12) {
+            return 'Bom dia';
+        } else if (hour < 18) {
+            return 'Boa tarde';
+        } else {
+            return 'Boa noite';
+        }
+    }
+
+    function header() {
+        const greeting = getGreeting(); // Obter a saudação apropriada baseada na hora atual
+    
+        return (
+            <LinearGradient
+                style={styles.headerWrapStyle}
+                colors={[Colors.secondaryColor, Colors.primaryColor]}
+            >
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={{ textAlign: 'center', flex: 1, ...Fonts.whiteColor14SemiBold }}>
+                        {`${greeting} ${name}, fique á vontade para se conhecer`} 
+                    </Text>
+                </View>
+            </LinearGradient>
+        );
+    }
 
 }
 

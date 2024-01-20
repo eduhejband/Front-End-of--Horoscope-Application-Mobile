@@ -6,7 +6,7 @@ import { ImageBackground } from 'react-native';
 const { width } = Dimensions.get('window');
 
 
-const HoroscopeDetailScreen = ({ navigation, route }) => {
+const AstralMap = ({ navigation, route }) => {
     const { astroData } = route.params;
     const signsList = [
         {
@@ -337,4 +337,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default HoroscopeDetailScreen;
+export default AstralMap;

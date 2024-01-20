@@ -10,7 +10,7 @@ import CircularProgress from 'react-native-circular-progress-indicator';
 const { width } = Dimensions.get('window');
 
 const ZodiacFirstHoroscopeDetailScreen = ({ navigation, route }) => {
-    const { dailyAdvice, conselhoProfissional, conselhoSaude, conselhoAfetivo, name,astroData } = route.params;
+    const { dailyAdvice, conselhoProfissional, conselhoSaude, conselhoAfetivo, name, astroData, chineseZodiac } = route.params;
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
@@ -27,7 +27,7 @@ const ZodiacFirstHoroscopeDetailScreen = ({ navigation, route }) => {
                     <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Onboarding')}>
                         <Text style={styles.buttonText}>Voltar</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BottomTabBar', {name:name, astroData: astroData})}>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BottomTabBar', {name:name, astroData: astroData, chineseZodiac: chineseZodiac})}>
                         <Text style={styles.buttonText}>Outras Informações</Text>
                     </TouchableOpacity>
                 </View>

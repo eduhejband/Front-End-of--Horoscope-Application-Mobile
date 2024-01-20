@@ -19,7 +19,7 @@ import zodiacHoroscopeDetailPeixesScreen from "./screens/zodiacDailyHoroscopeDet
 import AstrologerDetailScreen1 from "./screens/astrologerDetail/astrologerDetailScreen1";
 import AstrologerDetailScreen2 from "./screens/astrologerDetail/astrologerDetailScreen2";
 import AstrologerDetailScreen3 from "./screens/astrologerDetail/astrologerDetailScreen3";
-
+import chineseDetailScreen from "./screens/chineseSign/chineseSign.js"
 import zodiacHoroscopeFirstEscorpiaoScreen from "./screens/zodiacFirstScreen/zodiacHoroscopeFirstEscorpiaoScreen.js";
 
 import AstroProfile from "./screens/astral_map/astral_map.js"
@@ -68,7 +68,7 @@ const App = () => {
         <Stack.Screen name="AstrologerDetail2" component={AstrologerDetailScreen2} />
         <Stack.Screen name="AstrologerDetail3" component={AstrologerDetailScreen3} />
         <Stack.Screen name="AstroProfile" component={AstroProfile} />
-       
+        <Stack.Screen name="chineseDetailScreen" component={chineseDetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

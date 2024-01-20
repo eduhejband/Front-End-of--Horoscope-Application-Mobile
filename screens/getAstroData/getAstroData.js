@@ -1,5 +1,17 @@
 import axios from 'axios';
 
+// Função para calcular o signo chinês com base no ano de nascimento
+const getChineseZodiac = (year) => {
+    const animals = ['Rato', 'Boi', 'Tigre', 'Coelho', 'Dragão', 'Serpente', 'Cavalo', 'Cabra', 'Macaco', 'Galo', 'Cão', 'Porco'];
+    const startYear = 1900; // Ano de referência
+
+    if (year >= startYear && year <= 2040) {
+        return animals[(year - startYear) % 12];
+    } else {
+        return null; // Retorne null se o ano estiver fora do intervalo 1900-2040
+    }
+};
+
 export const getAstroData = async (userData) => {
 
     try {
@@ -40,10 +52,18 @@ export const getAstroData = async (userData) => {
                     saude: conselhoResponse.data.saude || ''
                 };
 
+                 // Extração do ano de nascimento do usuário a partir da data_nascimento
+                const birthYear = userData?.data_nascimento.split('.')[2]; // Supondo que a data está no formato DD.MM.AAAA
+
+                // Calcula o signo chinês com base no ano extraído
+                const chineseZodiac = getChineseZodiac(parseInt(birthYear));
+
+
                 return {
                     astroData: astroResponse.data,
                     dailyAdvice: dailyAdvice,
-                    conselhosData: conselhosData
+                    conselhosData: conselhosData,
+                    chineseZodiac: chineseZodiac // Adicionando o signo chinês
                 };
             }
         }

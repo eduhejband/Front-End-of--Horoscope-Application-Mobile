@@ -9,7 +9,7 @@ const BottomTabBarScreen = ({ navigation, route }) => {
 
     const userData = route.params?.userData;
     const dailyAdvice = route.params?.dailyAdvice;
-    const {name,astroData} = route.params;
+    const {name,astroData,chineseZodiac} = route.params;
     const backAction = () => {
         backClickCount == 1 ? BackHandler.exitApp() : _spring();
         return true;
@@ -41,7 +41,7 @@ const BottomTabBarScreen = ({ navigation, route }) => {
             <StatusBar translucent={false} backgroundColor={Colors.primaryColor} />
             <View style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
            
-                <HomeScreen navigation={navigation} userData={userData} dailyAdvice={dailyAdvice} name = {name} astroData={astroData}/>
+                <HomeScreen navigation={navigation} userData={userData} dailyAdvice={dailyAdvice} name = {name} astroData={astroData} chineseZodiac = {chineseZodiac}/>
                 
             
             

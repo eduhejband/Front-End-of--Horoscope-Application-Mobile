@@ -147,10 +147,10 @@ async function handleRegister() {
         timeout(30000)  // 30 segundos
     ]);
 
-    console.log("Dados recebidos da API getAstroData:", astroData.astroData);
+    console.log("Dados recebidos da API getAstroData:", astroData.chineseZodiac);
 
     // Verifique se os dados obtidos são válidos e completos
-    if (astroData && astroData.astroData && astroData.dailyAdvice && astroData.conselhosData) {
+    if (astroData && astroData.astroData && astroData.dailyAdvice && astroData.conselhosData && astroData.chineseZodiac) {
       console.log("Navegando para zodiacHoroscopeFirstEscorpiaoScreen com dados carregados.\n\n\n");
       navigation.navigate('zodiacHoroscopeFirstEscorpiaoScreen', { 
           astroData: astroData.astroData,
@@ -159,7 +159,8 @@ async function handleRegister() {
           conselhoSaude: astroData.conselhosData.saude,
           conselhoAfetivo: astroData.conselhosData.afetivo,
           userData: userData,
-          name: name 
+          name: name,
+          chineseZodiac: astroData.chineseZodiac  
       });
       
     } else {
