@@ -1,22 +1,20 @@
 import React from 'react';
 import {
     SafeAreaView, View, Dimensions, ScrollView, TouchableOpacity,
-    StatusBar, Image, StyleSheet, Text
+    StatusBar, Image, StyleSheet, Text, ImageBackground
 } from "react-native";
 import { Colors, Fonts, Sizes } from "../../constants/styles";
-import { LinearGradient } from 'expo-linear-gradient';
-import CircularProgress from 'react-native-circular-progress-indicator';
 
 const { width } = Dimensions.get('window');
 
-const ZodiacFirstHoroscopeDetailScreen = ({ navigation, route }) => {
-    const { dailyAdvice, conselhoProfissional, conselhoSaude, conselhoAfetivo, name, astroData, chineseZodiac } = route.params;
+const weekAdvice = ({ navigation, route }) => {
+    const { conselhoProfissional, conselhoSaude, conselhoAfetivo} = route.params;
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
             <StatusBar backgroundColor={Colors.secondaryColor} />
             <View style={{ flex: 1 }}>
-                {header(dailyAdvice)}
+                {header()}
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: Sizes.fixPadding * 2.0, }}
@@ -24,12 +22,8 @@ const ZodiacFirstHoroscopeDetailScreen = ({ navigation, route }) => {
                     {todaysLuckDetail()}
                 </ScrollView>
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Onboarding')}>
-                        <Text style={styles.buttonText}>Voltar</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BottomTabBar', {name:name, astroData: astroData, chineseZodiac: chineseZodiac,conselhoProfissional: conselhoProfissional,
-          conselhoSaude: conselhoSaude,conselhoAfetivo: conselhoAfetivo,})}>
-                        <Text style={styles.buttonText}>Outras Informações</Text>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+                            <Text style={styles.buttonText}>Voltar</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -39,8 +33,6 @@ const ZodiacFirstHoroscopeDetailScreen = ({ navigation, route }) => {
     function todaysLuckDetail() {
         return (
             <View style={{ marginTop:30,marginHorizontal: Sizes.fixPadding * 2.0, }}>
-
-
                 {loveLuckHealthAndMoneyInfo()}
             </View >
         )
@@ -94,40 +86,22 @@ const ZodiacFirstHoroscopeDetailScreen = ({ navigation, route }) => {
         )
     }
 
-    function progressBarWithPercentage({ title, percentage, startColor, endColor }) {
+    function header() {
         return (
-            <View style={{ alignItems: 'center' }}>
-                <Text style={{ marginBottom: Sizes.fixPadding - 5.0, ...Fonts.blackColor13SemiBold }}>
-                    {title}
-                </Text>
-                <CircularProgress
-                    value={percentage}
-                    activeStrokeColor={startColor}
-                    activeStrokeSecondaryColor={endColor}
-                    radius={width / 10.0}
-                    inActiveStrokeColor='#ECECEC'
-                    showProgressValue={false}
-                />
-                <Text style={{ ...Fonts.blackColor14Medium, position: 'absolute', bottom: width * 0.07 }}>
-                    {percentage}%
-                </Text>
-            </View>
-        )
-    }
-
-    function header(dailyAdvice) {
-        return (
-            <LinearGradient
+            <ImageBackground
+                source={require('../../assets/images/bg1.jpg')} // Substitua pelo caminho correto da sua imagem
                 style={styles.headerWrapStyle}
-                colors={[Colors.secondaryColor, Colors.primaryColor]}
+                resizeMode="cover" // Isso garante que a imagem cubra todo o espaço disponível
             >
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={{ textAlign: 'center', flex: 1, ...Fonts.whiteColor14SemiBold }}>
-                        {dailyAdvice ? dailyAdvice : 'Carregando conselho...'}
-                    </Text>
+                <View style={{ flexDirection: 'row', }}>
+                    <View style={{ marginLeft: Sizes.fixPadding - 5.0, }}>
+                        <Text style={{ ...Fonts.whiteColor18Bold }}>
+                            Conselhos semanais
+                        </Text>
+                    </View>
                 </View>
-            </LinearGradient>
-        );
+            </ImageBackground>
+        )
     }
 }
 
@@ -179,25 +153,20 @@ const styles = StyleSheet.create({
         paddingTop: Sizes.fixPadding - 5.0,
         paddingBottom: Sizes.fixPadding,
     },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginHorizontal: Sizes.fixPadding * 2.0,
-        marginBottom: 5,
-    },
     button: {
         backgroundColor: '#003366',
         borderRadius: 4,
         paddingVertical: 8,
-        width: '48%', // Distribui os botões em 48% da largura da tela
-        alignItems: 'center',
-        justifyContent: 'center',
+        width: '100%',
         marginTop: 12,
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 16,
-    }
+        alignItems: 'center',
+        justifyContent: 'center'
+      },
+      buttonText: {
+        fontSize: 18,
+        color: '#fff',
+        fontWeight: 'bold',
+      },
 });
 
-export default ZodiacFirstHoroscopeDetailScreen;
+export default weekAdvice;

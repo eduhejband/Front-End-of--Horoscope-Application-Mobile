@@ -102,27 +102,6 @@ const bannersList = [
     },
 ];
 
-const otherFeaturesList = [
-    {
-        id: '1',
-        featuresImage: require('../../assets/images/otherFeatures/tarot_reading.png'),
-        feature: 'Tarot Reading',
-        featureDescription: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-    },
-    {
-        id: '2',
-        featuresImage: require('../../assets/images/otherFeatures/crystal_ball_reading.png'),
-        feature: 'Crystal Ball Reading',
-        featureDescription: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-    },
-    {
-        id: '3',
-        featuresImage: require('../../assets/images/otherFeatures/palm_reading.png'),
-        feature: 'Palm Reading',
-        featureDescription: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-    }
-];
-
 const topAstrologerList = [
     {
         id: '1',
@@ -150,7 +129,7 @@ const topAstrologerList = [
     },
 ];
 
-const HomeScreen = ({ navigation, userData, name, astroData, chineseZodiac}) => {
+const HomeScreen = ({ navigation, userData, name, astroData, chineseZodiac,conselhoProfissional, conselhoSaude, conselhoAfetivo}) => {
 
     // Definir userData em um estado local
     const [userDetails, setUserDetails] = useState(userData);
@@ -314,94 +293,79 @@ const HomeScreen = ({ navigation, userData, name, astroData, chineseZodiac}) => 
     }
 
     function horoscopesInfo() {
-        
+        // Considerando Sizes.fixPadding para o espaçamento_x
+        const space_x = Sizes.fixPadding;
+    
         return (
-            <View style={{ marginHorizontal: Sizes.fixPadding * 2.0, }}>
-                <Text style={{ marginBottom: Sizes.fixPadding * 2.0, ...Fonts.blackColor16Bold }}>
+            <View style={{ marginHorizontal: space_x }}>
+                <Text style={{marginTop:5,marginHorizontal: Sizes.fixPadding * 1.0, marginBottom: space_x, ...Fonts.blackColor16Bold }}>
                     Horóscopos
                 </Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
                     <TouchableOpacity
                         activeOpacity={0.9}
-                        onPress={() => navigation.push('AstroProfile' , {astroData: astroData})}
-                        style={{ flex: 1 }}
+                        onPress={() => navigation.push('AstroProfile', { astroData: astroData })}
+                        style={{ flex: 1, marginHorizontal: space_x / 2 }}
                     >
                         <ImageBackground
                             source={require('../../assets/images/horoscopes/month_horoscope.png')}
                             style={{
                                 height: height / 4.7,
-                                padding: Sizes.fixPadding,
+                                padding: space_x,
                                 justifyContent: 'flex-end',
                             }}
-                            borderRadius={Sizes.fixPadding - 5.0}
+                            borderRadius={space_x - 5.0}
                         >
                             <Text style={{ ...Fonts.whiteColor12Bold }}>
-                                Mapa Astral 
+                                Mapa Astral
                             </Text>
                         </ImageBackground>
                     </TouchableOpacity>
-                    <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding + 5.0, }}>
-                        <TouchableOpacity
-                            activeOpacity={0.9}
-                            onPress={() => navigation.push('chineseDetailScreen' , {chineseZodiac: chineseZodiac})}
+    
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        onPress={() => navigation.push('chineseDetailScreen', { chineseZodiac: chineseZodiac })}
+                        style={{ flex: 1, marginHorizontal: space_x / 2 }}
+                    >
+                        <ImageBackground
+                            source={require('../../assets/images/horoscopes/chinese_zodiac_horoscope.png')}
+                            style={{
+                                height: height / 4.7,
+                                padding: space_x,
+                                justifyContent: 'flex-end',
+                            }}
+                            borderRadius={space_x - 5.0}
                         >
-                            <ImageBackground
-                                source={require('../../assets/images/horoscopes/chinese_zodiac_horoscope.png')}
-                                style={{
-                                    height: height / 4.7,
-                                    padding: Sizes.fixPadding,
-                                    justifyContent: 'flex-end',
-                                }}
-                                borderRadius={Sizes.fixPadding - 5.0}
-                            >
-                                <Text style={{ ...Fonts.whiteColor12Bold  }}>
-                                    Signo Chinês
-                                </Text>
-                            </ImageBackground>
-                        </TouchableOpacity>
-
-                        
-                    </View>
-                    <View style={{ flex: 1.2 }}>
-                        {horoscopesShort({
-                            type: 'Love Horoscopes',
-                            bgColor: '#E1BEE7',
-                            image: require('../../assets/images/horoscopes/love_horoscope.png')
-                        })}
-                        {horoscopesShort({
-                            type: 'Work Horoscopes',
-                            bgColor: '#C5CAE9',
-                            image: require('../../assets/images/horoscopes/work_horoscope.png'),
-                            style: { marginVertical: Sizes.fixPadding, }
-                        })}
-                        {horoscopesShort({
-                            type: 'Health Horoscopes',
-                            bgColor: '#B2DFDB',
-                            image: require('../../assets/images/horoscopes/health_horoscope.png')
-                        })}
-                    </View>
+                            <Text style={{ ...Fonts.whiteColor12Bold }}>
+                                Signo Chinês
+                            </Text>
+                        </ImageBackground>
+                    </TouchableOpacity>
+    
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        onPress={() => navigation.push('weekAdvice', { conselhoAfetivo: conselhoAfetivo,conselhoProfissional: conselhoProfissional, conselhoSaude: conselhoSaude })}
+                        style={{ flex: 1, marginHorizontal: space_x / 2 }}
+                    >
+                        <ImageBackground
+                            source={require('../../assets/conselho.png')}
+                            style={{
+                                height: height / 4.7,
+                                padding: space_x,
+                                justifyContent: 'flex-end',
+                            }}
+                            borderRadius={space_x - 5.0}
+                        >
+                            <Text style={{ ...Fonts.whiteColor12Bold }}>
+                                Conselhos semanais
+                            </Text>
+                        </ImageBackground>
+                    </TouchableOpacity>
                 </View>
             </View>
         )
     }
-
-    function horoscopesShort({ type, bgColor, image, style }) {
-        return (
-            <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() => navigation.push('HoroscopeDetail')}
-                style={{ ...{ ...style }, ...styles.horoscopesWrapStyle, backgroundColor: bgColor }}
-            >
-                <Image
-                    source={image}
-                    style={{ flex: 0.5, height: '100%', }}
-                />
-                <Text style={{ marginLeft: Sizes.fixPadding - 5.0, flex: 1, ...Fonts.whiteColor10Bold }}>
-                    {type}
-                </Text>
-            </TouchableOpacity>
-        )
-    }
+    
 
     function banners() {
         
@@ -504,10 +468,16 @@ const HomeScreen = ({ navigation, userData, name, astroData, chineseZodiac}) => 
             </TouchableOpacity>
         )
         return (
+            
             <View style={{
                 paddingHorizontal: Sizes.fixPadding + 6.5,
                 paddingVertical: Sizes.fixPadding * 2.0,
             }}>
+
+                <Text style={{marginTop: 5, marginHorizontal: Sizes.fixPadding * 0.5, marginBottom: Sizes.fixPadding, ...Fonts.blackColor16Bold }}>
+                    Signos do zodíaco
+                </Text>
+                
                 <FlatList
                     data={zodiacSignsList}
                     keyExtractor={(item) => `${item.id}`}
