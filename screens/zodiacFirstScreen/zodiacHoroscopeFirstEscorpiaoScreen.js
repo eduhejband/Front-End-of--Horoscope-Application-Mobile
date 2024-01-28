@@ -1,137 +1,212 @@
-import React from 'react';
-import {
-    SafeAreaView, View, Dimensions, ScrollView, TouchableOpacity,
-    StatusBar, Image, StyleSheet, Text
-} from "react-native";
-import { Colors, Fonts, Sizes } from "../../constants/styles";
+import React, { useState } from "react";
+import { SafeAreaView, View, Dimensions, StatusBar, FlatList, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
+import { Colors, Fonts, Sizes, } from "../../constants/styles";
 import { LinearGradient } from 'expo-linear-gradient';
-import CircularProgress from 'react-native-circular-progress-indicator';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Linking, Alert } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
-const ZodiacFirstHoroscopeDetailScreen = ({ navigation, route }) => {
-    const { dailyAdvice, conselhoProfissional, conselhoSaude, conselhoAfetivo, name, astroData, chineseZodiac } = route.params;
 
+
+const personalizedHoroscopesList = [
+    {
+        id: '1',
+        horoscope: 'Consulta sobre saúde',
+        start: '07:00',
+        end: '21:00'
+    },
+    {
+        id: '2',
+        horoscope: 'Consulta sobre Relacionamentos',
+        start: '09:00',
+        end: '22:00'
+    },
+];
+
+
+const ZodiacFirstHoroscopeDetailScreen = ({ navigation, route }) => {
+
+    const { dailyAdvice, conselhoProfissional, conselhoSaude, conselhoAfetivo, name, astroData, chineseZodiac } = route.params;
+   
+    const aboutPersonalizedHoroscopesList = [dailyAdvice];
+    const phone = ['9999999999'];
+    const callWhatsApp = (phone) => {
+        let url = `whatsapp://send?phone=${phone}`;
+        Linking.canOpenURL(url)
+            .then((supported) => {
+                if (!supported) {
+                    console.log('WhatsApp não está instalado neste dispositivo.');
+                    Alert.alert('Erro', 'WhatsApp não está instalado neste dispositivo.');
+                } else {
+                    return Linking.openURL(url);
+                }
+            })
+            .catch((err) => {
+                console.error('Um erro ocorreu', err);
+                Alert.alert('Erro', 'Ocorreu um erro ao tentar abrir o WhatsApp.');
+            });
+    };
+    
+    
+   
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
             <StatusBar backgroundColor={Colors.secondaryColor} />
             <View style={{ flex: 1 }}>
-                {header(dailyAdvice)}
-                <ScrollView
+                {header()}
+                <FlatList
+                    ListHeaderComponent={
+                        <>
+                            {aboutPersonalizedHoroscopes()}
+                            {personalizedHoroscopes()}
+                            {whatIsHoroscope()}
+                            
+                        </>
+                    }
+                    contentContainerStyle={{ paddingBottom: Sizes.fixPadding, }}
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: Sizes.fixPadding * 2.0, }}
-                >
-                    {todaysLuckDetail()}
-                </ScrollView>
-                <View style={styles.buttonContainer}>
+                />
+            </View>
+            <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Onboarding')}>
                         <Text style={styles.buttonText}>Voltar</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BottomTabBar', {name:name, astroData: astroData, chineseZodiac: chineseZodiac,conselhoProfissional: conselhoProfissional,
-          conselhoSaude: conselhoSaude,conselhoAfetivo: conselhoAfetivo,})}>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BottomTabBar', {name:name, astroData: astroData, chineseZodiac: chineseZodiac,conselhoProfissional: conselhoProfissional, phone:phone, conselhoSaude: conselhoSaude,conselhoAfetivo: conselhoAfetivo,})}>
                         <Text style={styles.buttonText}>Outras Informações</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
         </SafeAreaView>
-    );
-    
-    function todaysLuckDetail() {
+    )
+
+    function aboutPersonalizedHoroscopes() {
         return (
-            <View style={{ marginTop:30,marginHorizontal: Sizes.fixPadding * 2.0, }}>
-
-
-                {loveLuckHealthAndMoneyInfo()}
-            </View >
-        )
-    }
-
-    function loveLuckHealthAndMoneyInfo() {
-        return (
-            <View>
-                {loveLuckHealthAndMoneyDetail({
-                    title: 'Riqueza',
-                    icon: require('../../assets/images/icons/money.png'),
-                    iconColor: Colors.greenColor,
-                    description: conselhoProfissional,
-                    titleStyle: { ...Fonts.greenColor14SemiBold }
-                })}
-                {loveLuckHealthAndMoneyDetail({
-                    title: 'Amor',
-                    icon: require('../../assets/images/icons/love.png'),
-                    iconColor: Colors.redColor,
-                    description: conselhoAfetivo,
-                    titleStyle: { ...Fonts.redColor14SemiBold }
-                })}
-                {loveLuckHealthAndMoneyDetail({
-                    title: 'Saúde',
-                    icon: require('../../assets/images/icons/health.png'),
-                    iconColor: Colors.yellowColor,
-                    description: conselhoSaude,
-                    titleStyle: { ...Fonts.yellowColor14SemiBold }
-                })}
+            <View style={{ marginTop:50,marginHorizontal: Sizes.fixPadding * 2.0 }}>
+                <Text style={{ marginBottom: Sizes.fixPadding, ...Fonts.blackColor16Bold }}>
+                    Conselho diário
+                </Text>
+                <Text style={{ marginBottom: Sizes.fixPadding, ...Fonts.grayColor12Regular }}>
+                    {aboutPersonalizedHoroscopesList[0]}
+                </Text>
             </View>
         )
     }
+    
+    function personalizedHoroscopes() {
 
-    function loveLuckHealthAndMoneyDetail({ title, icon, iconColor, description, titleStyle }) {
-        return (
-            <View style={{ marginBottom: Sizes.fixPadding + 5.0, }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Image
-                        source={icon}
-                        style={{ width: 25.0, height: 25.0, resizeMode: 'contain' }}
-                        tintColor={iconColor}
-                    />
-                    <Text style={{ marginLeft: Sizes.fixPadding + 2.0, ...{ ...titleStyle } }}>
-                        {title}
+        const renderItem = ({ item }) => (
+            <View style={styles.personalizedHoroscopeWrapStyle}>
+                <View style={{ flex: 1 }}>
+                    <Text style={{ ...Fonts.blackColor13Medium }}>
+                        {item.horoscope}
+                    </Text>
+                    <Text style={{ ...Fonts.blackColor12Regular }}>
+                        {item.start} - {item.end}
                     </Text>
                 </View>
-                <Text style={{ marginTop: Sizes.fixPadding - 5.0, ...Fonts.grayColor12Regular }}>
-                    {description}
-                </Text>
+                <View style={{ flex: 1, alignSelf: 'flex-end' }}>
+                    <Image
+                        source={require('../../assets/images/horoscopes/weekly_horoscope.png')}
+                        style={{ resizeMode: 'contain', height: 60, width: 60, }}
+                    />
+                </View>
+                <View style={styles.bannerCallInfoWrapStyle}>
+                    <View style={styles.phoneIconWrapStyle}>
+                        <MaterialIcons
+                            name="phone"
+                            color={Colors.whiteColor}
+                            size={12}
+                        />
+                    </View>
+                    <TouchableOpacity onPress={() => callWhatsApp('+5511942605714')}>
+                        <Text style={{ marginLeft: Sizes.fixPadding - 5.0, ...Fonts.primaryColor10Black }}>
+                            Ligar para o astrólogo
+                        </Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         )
-    }
-
-    function progressBarWithPercentage({ title, percentage, startColor, endColor }) {
         return (
-            <View style={{ alignItems: 'center' }}>
-                <Text style={{ marginBottom: Sizes.fixPadding - 5.0, ...Fonts.blackColor13SemiBold }}>
-                    {title}
+            <View>
+                <Text style={{ marginTop:30,marginHorizontal: Sizes.fixPadding * 2.0, ...Fonts.blackColor16Bold }}>
+                    Está com algum problema? Ligue para nós, primeira consulta gratuíta
                 </Text>
-                <CircularProgress
-                    value={percentage}
-                    activeStrokeColor={startColor}
-                    activeStrokeSecondaryColor={endColor}
-                    radius={width / 10.0}
-                    inActiveStrokeColor='#ECECEC'
-                    showProgressValue={false}
+                <FlatList
+                    data={personalizedHoroscopesList}
+                    keyExtractor={(item) => `${item.id}`}
+                    renderItem={renderItem}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingLeft: Sizes.fixPadding * 2.0,
+                        paddingTop: Sizes.fixPadding + 5.0,
+                        paddingBottom: Sizes.fixPadding * 2.0,
+                    }}
                 />
-                <Text style={{ ...Fonts.blackColor14Medium, position: 'absolute', bottom: width * 0.07 }}>
-                    {percentage}%
+            </View>
+        )
+    }
+    
+
+    function whatIsHoroscope() {
+        return (
+            <View style={{ marginTop:30, marginHorizontal: Sizes.fixPadding * 2.0, }}>
+                <Text style={{ marginBottom: Sizes.fixPadding, ...Fonts.blackColor16Bold }}>
+                    Afinal, o que é Astrologia?
                 </Text>
+                <View>
+                    <Text style={{ marginBottom: Sizes.fixPadding, ...Fonts.grayColor12Regular }}>
+                    Doutrina, estudo, arte ou prática, cujo objetivo é decifrar a influência dos astros no curso dos acontecimentos terrestres e na vida das pessoas, em suas características psicológicas e em seu destino, explicar o mundo e predizer o futuro de povos ou indivíduos; uranoscopia.
+                    </Text>            
+                </View>
             </View>
         )
     }
 
-    function header(dailyAdvice) {
+    function header() {
         return (
             <LinearGradient
                 style={styles.headerWrapStyle}
                 colors={[Colors.secondaryColor, Colors.primaryColor]}
             >
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={{ textAlign: 'center', flex: 1, ...Fonts.whiteColor14SemiBold }}>
-                        {dailyAdvice ? dailyAdvice : 'Carregando conselho...'}
-                    </Text>
+                <Text style={{ textAlign: 'center', flex: 1, ...Fonts.whiteColor14SemiBold }}>
+                    {'Seu signo é, ' + astroData.Sun}
+                </Text>
                 </View>
             </LinearGradient>
         );
     }
 }
 
+
 const styles = StyleSheet.create({
+    headerWrapStyle: {
+        paddingHorizontal: Sizes.fixPadding * 2.0,
+        paddingVertical: Sizes.fixPadding * 3.0,
+        borderBottomLeftRadius: Sizes.fixPadding * 3.0,
+        borderBottomRightRadius: Sizes.fixPadding * 3.0,
+    },
+    signImageWrapStyle: {
+        backgroundColor: Colors.whiteColor,
+        elevation: 4.0,
+        borderRadius: Sizes.fixPadding - 5.0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: Sizes.fixPadding + 2.0,
+        marginHorizontal: Sizes.fixPadding * 1.5,
+    },
+    personalizedHoroscopeWrapStyle: {
+        backgroundColor: Colors.whiteColor,
+        elevation: 1.5,
+        borderRadius: Sizes.fixPadding - 5.0,
+        width: width / 1.97,
+        padding: Sizes.fixPadding,
+        marginRight: Sizes.fixPadding * 2.0,
+        borderColor: '#eeeeee',
+        borderWidth: 1.0,
+    },
+    
     headerWrapStyle: {
         paddingHorizontal: Sizes.fixPadding * 2.0,
         paddingVertical: Sizes.fixPadding * 3.0,

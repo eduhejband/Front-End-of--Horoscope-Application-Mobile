@@ -4,8 +4,7 @@ import { SafeAreaView, View, StatusBar, Text, ImageBackground, TouchableOpacity,
 import { Colors, Fonts, Sizes, } from "../../constants/styles";
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Alert } from 'react-native';
-
+import { Linking, Alert } from 'react-native';
 
 
 const { width, height } = Dimensions.get('window');
@@ -92,13 +91,13 @@ const zodiacScreenMapping = {
 const bannersList = [
     {
         id: '1',
-        title: 'STRESS REMOVER',
-        description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+        title: 'Lide com seu stress',
+        description: 'Consulte nossos especialistas afim de poder ver as melhores formas de curar o que te estressa',
     },
     {
         id: '2',
-        title: 'FREE HOROSCOPES',
-        description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+        title: 'Relacionamentos',
+        description: 'Descubra quem será o amor da sua vida, e descubra como evitar relacionamentos tóxicos.',
     },
 ];
 
@@ -129,7 +128,7 @@ const topAstrologerList = [
     },
 ];
 
-const HomeScreen = ({ navigation, userData, name, astroData, chineseZodiac,conselhoProfissional, conselhoSaude, conselhoAfetivo}) => {
+const HomeScreen = ({ navigation, userData, name, phone, astroData, chineseZodiac,conselhoProfissional, conselhoSaude, conselhoAfetivo}) => {
 
     // Definir userData em um estado local
     const [userDetails, setUserDetails] = useState(userData);
@@ -143,26 +142,25 @@ const HomeScreen = ({ navigation, userData, name, astroData, chineseZodiac,conse
             getAstroData();
         }
     }, [userDetails]);
-    const getAstroData = async () => {
-        try {
-            const response = await axios.post('https://serverteste-43462c33197a.herokuapp.com/mapa_astral', {
-                data_nascimento: userData?.data_nascimento,
-                hora_nascimento: userData?.hora_nascimento,
-                cidade_nascimento: userData?.cidade_nascimento
-            }, {
-                headers: {
-                    'Authorization': `YXqGNQOaNQdNkrsIP8M6C02Nb6P2l4MlwvU1rCENxtbnVAKvVQkoOD04pJ4YAda8k0QVsLZBkTpY0F5zKLx6xRc5HWjF3d7ULrHYD7q8Djhol9Fp9Mrxxzrp0VFjxUcs1dCjKIuQyX8BcLl6yMXlaIrJKpS6NOxRCqd2F7655bd13e2bc9e` // Assuming a Bearer token; modify as needed
+
+    const callWhatsApp = (phone) => {
+        let url = `whatsapp://send?phone=${phone}`;
+        Linking.canOpenURL(url)
+            .then((supported) => {
+                if (!supported) {
+                    console.log('WhatsApp não está instalado neste dispositivo.');
+                    Alert.alert('Erro', 'WhatsApp não está instalado neste dispositivo.');
+                } else {
+                    return Linking.openURL(url);
                 }
+            })
+            .catch((err) => {
+                console.error('Um erro ocorreu', err);
+                Alert.alert('Erro', 'Ocorreu um erro ao tentar abrir o WhatsApp.');
             });
-    
-            if (response.data) {
-                return response.data.daily_advice;
-            }
-        } catch (error) {
-            console.error('Error fetching astro data:', error);
-        }
-        return null;
     };
+    
+    
 
     const {
         currentSelectedZodiacSign,
@@ -392,9 +390,11 @@ const HomeScreen = ({ navigation, userData, name, astroData, chineseZodiac,conse
                                     size={12}
                                 />
                             </View>
-                            <Text style={{ marginLeft: Sizes.fixPadding - 5.0, ...Fonts.primaryColor10Black }}>
-                                Call Astrologer
-                            </Text>
+                            <TouchableOpacity onPress={() => callWhatsApp('+5511942605714')}>
+                                <Text style={{ marginLeft: Sizes.fixPadding - 5.0, ...Fonts.primaryColor10Black }}>
+                                    Ligar para o astrólogo
+                                </Text>
+                             </TouchableOpacity>
                         </View>
                     </View>
                     <MaterialCommunityIcons
