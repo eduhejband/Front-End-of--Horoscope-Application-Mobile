@@ -11,6 +11,8 @@ export default function SigninScreen({ navigation }) {
   const [birthDate, setBirthDate] = useState('');
   const [birthDateError, setBirthDateError] = useState(false);
   const [birthplaceValidation, setBirthplaceValidation] = useState(null);
+  const [isCheckingBirthDate, setIsCheckingBirthDate] = useState(false);
+  const [birthDateValidation, setBirthDateValidation] = useState(null);
   const [isCheckingBirthplace, setIsCheckingBirthplace] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const isValidDate = (d) => {
@@ -87,6 +89,52 @@ export default function SigninScreen({ navigation }) {
       setIsCheckingBirthplace(false);
     }
   }, [birthplace]);
+
+  const checkBirthDateValidity = () => {
+    setIsCheckingBirthDate(true);
+  
+    // birthDate está no formato DD/MM/YYYY
+    const birthDateParts = birthDate.split('/');
+    if (birthDateParts.length === 3) {
+      const day = parseInt(birthDateParts[0], 10);
+      const month = parseInt(birthDateParts[1], 10) - 1; // Mês em JavaScript é 0-indexado
+      const year = parseInt(birthDateParts[2], 10);
+  
+      const birthDateObject = new Date(year, month, day);
+      const currentDate = new Date();
+  
+      // Verifica se a data de nascimento é válida e não é uma data futura
+      if (!isNaN(birthDateObject.getTime()) && birthDateObject < currentDate) {
+        setBirthDateValidation(true);
+      } else {
+        setBirthDateValidation(false);
+      }
+    } else {
+      setBirthDateValidation(false);
+    }
+  
+    setIsCheckingBirthDate(false);
+  };
+  
+  useEffect(() => {
+    if (birthDate) {
+      setIsCheckingBirthDate(true);
+      setBirthDateValidation(null); // Limpa o estado de validação ao começar a edição
+  
+      const timerId = setTimeout(() => {
+        checkBirthDateValidity();
+      }, 5000); // Delay de 5 segundos para a validação
+  
+      return () => {
+        clearTimeout(timerId);
+        setIsCheckingBirthDate(false); // Esconde "Aguarde" quando o usuário altera o valor no campo
+      };
+    } else {
+      setBirthDateValidation(null);
+      setIsCheckingBirthDate(false);
+    }
+  }, [birthDate]);
+  
 
   
 async function handleRegister() {
@@ -207,7 +255,7 @@ function timeout(ms) {
           <TextInput placeholder='Digite seu nome' style={styles.input} value={name} onChangeText={setName} />
           <Text style={styles.title}>Local de Nascimento</Text>
           <TextInput
-            placeholder='Cidade, Estado, País (ex: São Paulo, SP, Brasil)'
+            placeholder='ex: São Paulo, SP, Brasil'
             style={styles.input}
             onChangeText={setBirthplace}
             value={birthplace}
@@ -231,16 +279,17 @@ function timeout(ms) {
             placeholder="DD/MM/AAAA"
             keyboardType="numeric"
           />
-          {birthDateError && <Text style={styles.error}>Por favor, insira uma data válida.</Text>}
-          
+          {isCheckingBirthDate && <Text style={styles.messageChecking}>Aguarde...</Text>}
+          {birthDateValidation === true && <Text style={styles.messageValid}>Data válida.</Text>}
+          {birthDateValidation === false && <Text style={styles.messageInvalid}>Por favor, insira uma data válida.</Text>}
           <TouchableOpacity 
-            style={[styles.button, isLoading ? styles.buttonLoading : {}]} 
-            onPress={handleRegister} 
-            disabled={isLoading}
-        >
-            <Text style={styles.buttonText}>
-                {isLoading ? 'Aguarde...' : 'Prosseguir'}
-            </Text>
+              style={[styles.button, (isLoading || isCheckingBirthplace || isCheckingBirthDate || birthplaceValidation === false || birthDateValidation === false) ? styles.buttonLoading : {}]} 
+              onPress={handleRegister} 
+              disabled={isLoading || isCheckingBirthplace || isCheckingBirthDate || birthplaceValidation === false || birthDateValidation === false}
+            >
+              <Text style={styles.buttonText}>
+                  {isLoading || isCheckingBirthplace || isCheckingBirthDate ? 'Aguarde...' : 'Prosseguir'}
+              </Text>
           </TouchableOpacity>
     
           <TouchableOpacity 
