@@ -20,10 +20,7 @@ export default function SigninScreen({ navigation }) {
   const [isCheckingBirthTime, setIsCheckingBirthTime] = useState(false);
 
   const isValidDate = (d) => {
-    if (Object.prototype.toString.call(d) === "[object Date]") {
-      return !isNaN(d.getTime());
-    }
-    return false;
+    return d instanceof Date && !isNaN(d);
   };
 
   const isFutureDate = (date) => {
@@ -41,16 +38,33 @@ export default function SigninScreen({ navigation }) {
 
   const validateBirthDate = (date) => {
     const birthDateParts = date.split('/');
-    if (birthDateParts.length !== 3 || birthDateParts[1] > 12 || !isValidDayForMonth(birthDateParts[0], birthDateParts[1], birthDateParts[2])) {
-      setBirthDateError(true);
-    } else {
-      const birthDateObject = new Date(parseInt(birthDateParts[2]), parseInt(birthDateParts[1]) - 1, parseInt(birthDateParts[0]));
+    if (birthDateParts.length === 3 &&
+        birthDateParts[0].length === 2 && 
+        birthDateParts[1].length === 2 && 
+        birthDateParts[2].length === 4) {
+
+      const day = parseInt(birthDateParts[0], 10);
+      const month = parseInt(birthDateParts[1], 10);
+      const year = parseInt(birthDateParts[2], 10);
+
+      if (month > 12 || !isValidDayForMonth(day, month, year)) {
+        setBirthDateError(true);
+        setBirthDateValidation(false);
+        return;
+      }
+
+      const birthDateObject = new Date(year, month - 1, day);
 
       if (!isValidDate(birthDateObject) || isFutureDate(birthDateObject)) {
         setBirthDateError(true);
+        setBirthDateValidation(false);
       } else {
         setBirthDateError(false);
+        setBirthDateValidation(true);
       }
+    } else {
+      setBirthDateError(true);
+      setBirthDateValidation(false);
     }
   };
 
@@ -89,38 +103,15 @@ export default function SigninScreen({ navigation }) {
     }
   }, [birthplace]);
 
-  const checkBirthDateValidity = () => {
-    setIsCheckingBirthDate(true);
-
-    const birthDateParts = birthDate.split('/');
-    if (birthDateParts.length === 3) {
-      const day = parseInt(birthDateParts[0], 10);
-      const month = parseInt(birthDateParts[1], 10) - 1;
-      const year = parseInt(birthDateParts[2], 10);
-
-      const birthDateObject = new Date(year, month, day);
-      const currentDate = new Date();
-
-      if (!isNaN(birthDateObject.getTime()) && birthDateObject < currentDate) {
-        setBirthDateValidation(true);
-      } else {
-        setBirthDateValidation(false);
-      }
-    } else {
-      setBirthDateValidation(false);
-    }
-
-    setIsCheckingBirthDate(false);
-  };
-
   useEffect(() => {
     if (birthDate) {
       setIsCheckingBirthDate(true);
       setBirthDateValidation(null);
 
       const timerId = setTimeout(() => {
-        checkBirthDateValidity();
-      }, 5000);
+        validateBirthDate(birthDate);
+        setIsCheckingBirthDate(false);
+      }, 1000); // 1 segundo de atraso
 
       return () => {
         clearTimeout(timerId);
@@ -163,7 +154,7 @@ export default function SigninScreen({ navigation }) {
 
       const timerId = setTimeout(() => {
         checkBirthTimeValidity();
-      }, 5000);
+      }, 1000); // 1 segundo de atraso
 
       return () => {
         clearTimeout(timerId);
@@ -178,7 +169,7 @@ export default function SigninScreen({ navigation }) {
   async function handleRegister() {
     setIsLoading(true);
 
-    if (!name || birthplaceValidation === false || !birthplace || !birthDate) {
+    if (!name || birthplaceValidation === false || !birthplace || !birthDate || birthDateValidation === false) {
       Alert.alert('Campos obrigatórios', 'Por favor, preencha os campos corretamente.');
       setIsLoading(false);
       return;
@@ -196,33 +187,13 @@ export default function SigninScreen({ navigation }) {
       return;
     }
 
-    const birthDateParts = birthDate.split('/');
-    if (birthDateParts.length !== 3 || birthDateParts[1] > 12 || !isValidDayForMonth(birthDateParts[0], birthDateParts[1], birthDateParts[2])) {
-      Alert.alert('Erro', 'Por favor, insira uma data válida no formato DD/MM/AAAA.');
-      setIsLoading(false);
-      return;
-    }
-
-    const birthDateObject = new Date(parseInt(birthDateParts[2]), parseInt(birthDateParts[1]) - 1, parseInt(birthDateParts[0]));
-
-    if (!isValidDate(birthDateObject)) {
-      Alert.alert('Erro', 'Por favor, insira uma data válida.');
-      setIsLoading(false);
-      return;
-    }
-
-    if (isFutureDate(birthDateObject)) {
-      Alert.alert('Erro', 'A data de nascimento não pode ser no futuro.');
-      setIsLoading(false);
-      return;
-    }
-
     if (birthTimeValidation === false) {
       Alert.alert('Erro', 'Por favor, insira um horário válido ou deixe o campo vazio.');
       setIsLoading(false);
       return;
     }
 
+    const birthDateParts = birthDate.split('/');
     const formattedBirthDate = `${birthDateParts[0]}.${birthDateParts[1]}.${birthDateParts[2]}`;
     const formattedBirthplace = birthplace.split(',').map(item => item.trim()).join('.');
     const formattedBirthTime = birthTime || '12:00';
@@ -313,10 +284,7 @@ export default function SigninScreen({ navigation }) {
               format: 'DD/MM/YYYY'
             }}
             value={birthDate}
-            onChangeText={text => {
-              setBirthDate(text);
-              validateBirthDate(text);
-            }}
+            onChangeText={text => setBirthDate(text)}
             style={styles.input}
             placeholder="DD/MM/AAAA"
             keyboardType="numeric"
