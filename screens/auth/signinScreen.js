@@ -1,5 +1,5 @@
-import React, { useState,useEffect  } from 'react';
-import {ImageBackground,View,Text,StyleSheet,TextInput,TouchableOpacity,Alert,} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { ImageBackground, View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { TextInputMask } from 'react-native-masked-text';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -15,16 +15,15 @@ export default function SigninScreen({ navigation }) {
   const [birthDateValidation, setBirthDateValidation] = useState(null);
   const [isCheckingBirthplace, setIsCheckingBirthplace] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [birthTime, setBirthTime] = useState('');
+  const [birthTimeValidation, setBirthTimeValidation] = useState(null);
+  const [isCheckingBirthTime, setIsCheckingBirthTime] = useState(false);
+
   const isValidDate = (d) => {
     if (Object.prototype.toString.call(d) === "[object Date]") {
-      if (isNaN(d.getTime())) {
-        return false;
-      } else {
-        return true;
-      }
-    } else {
-      return false;
+      return !isNaN(d.getTime());
     }
+    return false;
   };
 
   const isFutureDate = (date) => {
@@ -73,16 +72,16 @@ export default function SigninScreen({ navigation }) {
 
   useEffect(() => {
     if (birthplace) {
-      setIsCheckingBirthplace(true);  // Define "Aguarde" assim que o usuário começa a digitar
-      setBirthplaceValidation(null);  // Limpa as mensagens de validação assim que o usuário começa a digitar
-  
+      setIsCheckingBirthplace(true);
+      setBirthplaceValidation(null);
+
       const timerId = setTimeout(() => {
         checkBirthplaceValidity(birthplace);
       }, 5000);
-  
+
       return () => {
-        clearTimeout(timerId);  // Limpa o timer se o usuário alterar o valor no campo
-        setIsCheckingBirthplace(false); // Esconde "Aguarde" quando o usuário altera o valor no campo
+        clearTimeout(timerId);
+        setIsCheckingBirthplace(false);
       };
     } else {
       setBirthplaceValidation(null);
@@ -92,18 +91,16 @@ export default function SigninScreen({ navigation }) {
 
   const checkBirthDateValidity = () => {
     setIsCheckingBirthDate(true);
-  
-    // birthDate está no formato DD/MM/YYYY
+
     const birthDateParts = birthDate.split('/');
     if (birthDateParts.length === 3) {
       const day = parseInt(birthDateParts[0], 10);
-      const month = parseInt(birthDateParts[1], 10) - 1; // Mês em JavaScript é 0-indexado
+      const month = parseInt(birthDateParts[1], 10) - 1;
       const year = parseInt(birthDateParts[2], 10);
-  
+
       const birthDateObject = new Date(year, month, day);
       const currentDate = new Date();
-  
-      // Verifica se a data de nascimento é válida e não é uma data futura
+
       if (!isNaN(birthDateObject.getTime()) && birthDateObject < currentDate) {
         setBirthDateValidation(true);
       } else {
@@ -112,95 +109,142 @@ export default function SigninScreen({ navigation }) {
     } else {
       setBirthDateValidation(false);
     }
-  
+
     setIsCheckingBirthDate(false);
   };
-  
+
   useEffect(() => {
     if (birthDate) {
       setIsCheckingBirthDate(true);
-      setBirthDateValidation(null); // Limpa o estado de validação ao começar a edição
-  
+      setBirthDateValidation(null);
+
       const timerId = setTimeout(() => {
         checkBirthDateValidity();
-      }, 5000); // Delay de 5 segundos para a validação
-  
+      }, 5000);
+
       return () => {
         clearTimeout(timerId);
-        setIsCheckingBirthDate(false); // Esconde "Aguarde" quando o usuário altera o valor no campo
+        setIsCheckingBirthDate(false);
       };
     } else {
       setBirthDateValidation(null);
       setIsCheckingBirthDate(false);
     }
   }, [birthDate]);
-  
 
-  
-async function handleRegister() {
-  setIsLoading(true);
+  const checkBirthTimeValidity = () => {
+    setIsCheckingBirthTime(true);
 
-  if (!name || birthplaceValidation === false || !birthplace || !birthDate) {
+    if (birthTime) {
+      const birthTimeParts = birthTime.split(':');
+      if (birthTimeParts.length === 2) {
+        const hours = parseInt(birthTimeParts[0], 10);
+        const minutes = parseInt(birthTimeParts[1], 10);
+
+        if (hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60) {
+          setBirthTimeValidation(true);
+        } else {
+          setBirthTimeValidation(false);
+        }
+      } else {
+        setBirthTimeValidation(false);
+      }
+    } else {
+      setBirthTimeValidation(null);
+    }
+
+    setIsCheckingBirthTime(false);
+  };
+
+  useEffect(() => {
+    if (birthTime) {
+      setIsCheckingBirthTime(true);
+      setBirthTimeValidation(null);
+
+      const timerId = setTimeout(() => {
+        checkBirthTimeValidity();
+      }, 5000);
+
+      return () => {
+        clearTimeout(timerId);
+        setIsCheckingBirthTime(false);
+      };
+    } else {
+      setBirthTimeValidation(null);
+      setIsCheckingBirthTime(false);
+    }
+  }, [birthTime]);
+
+  async function handleRegister() {
+    setIsLoading(true);
+
+    if (!name || birthplaceValidation === false || !birthplace || !birthDate) {
       Alert.alert('Campos obrigatórios', 'Por favor, preencha os campos corretamente.');
       setIsLoading(false);
       return;
-  }
+    }
 
-  if (isCheckingBirthplace) {
-      Alert.alert('Aguarde', 'Por favor, aguarde a verificação do local de nascimento.');
+    if (isCheckingBirthplace || isCheckingBirthDate || isCheckingBirthTime) {
+      Alert.alert('Aguarde', 'Por favor, aguarde as verificações.');
       setIsLoading(false);
       return;
-  }
+    }
 
-  if (birthplaceValidation === false) {
-      Alert.alert('Por favor, digite um local de nascimento válido');
+    if (birthplaceValidation === false) {
+      Alert.alert('Erro', 'Por favor, digite um local de nascimento válido.');
       setIsLoading(false);
       return;
-  }
+    }
 
-  const birthDateParts = birthDate.split('/');
-  if (birthDateParts.length !== 3 || birthDateParts[1] > 12 || !isValidDayForMonth(birthDateParts[0], birthDateParts[1], birthDateParts[2])) {
+    const birthDateParts = birthDate.split('/');
+    if (birthDateParts.length !== 3 || birthDateParts[1] > 12 || !isValidDayForMonth(birthDateParts[0], birthDateParts[1], birthDateParts[2])) {
       Alert.alert('Erro', 'Por favor, insira uma data válida no formato DD/MM/AAAA.');
       setIsLoading(false);
       return;
-  }
+    }
 
-  const birthDateObject = new Date(parseInt(birthDateParts[2]), parseInt(birthDateParts[1]) - 1, parseInt(birthDateParts[0]));
+    const birthDateObject = new Date(parseInt(birthDateParts[2]), parseInt(birthDateParts[1]) - 1, parseInt(birthDateParts[0]));
 
-  if (!isValidDate(birthDateObject)) {
+    if (!isValidDate(birthDateObject)) {
       Alert.alert('Erro', 'Por favor, insira uma data válida.');
       setIsLoading(false);
       return;
-  }
+    }
 
-  if (isFutureDate(birthDateObject)) {
+    if (isFutureDate(birthDateObject)) {
       Alert.alert('Erro', 'A data de nascimento não pode ser no futuro.');
       setIsLoading(false);
       return;
-  }
+    }
 
-  const formattedBirthDate = `${birthDateParts[0]}.${birthDateParts[1]}.${birthDateParts[2]}`;
-  const formattedBirthplace = birthplace.split(',').map(item => item.trim()).join('.');
+    if (birthTimeValidation === false) {
+      Alert.alert('Erro', 'Por favor, insira um horário válido ou deixe o campo vazio.');
+      setIsLoading(false);
+      return;
+    }
 
-  const userData = {
+    const formattedBirthDate = `${birthDateParts[0]}.${birthDateParts[1]}.${birthDateParts[2]}`;
+    const formattedBirthplace = birthplace.split(',').map(item => item.trim()).join('.');
+    const formattedBirthTime = birthTime || '12:00';
+
+    const userData = {
       name: name,
       data_nascimento: formattedBirthDate,
-      hora_nascimento: "12:00",
+      hora_nascimento: formattedBirthTime,
       cidade_nascimento: formattedBirthplace
-  };
+    };
 
-  try {
-    const astroData = await Promise.race([
+    try {
+      const astroData = await Promise.race([
         getAstroData(userData),
-        timeout(30000)  // 30 segundos
-    ]);
+        timeout(30000)
+      ]);
 
-    console.log("Dados recebidos da API getAstroData:", astroData.chineseZodiac);
+      console.log("Dados recebidos da API getAstroData:", astroData.chineseZodiac);
 
-    // Verifique se os dados obtidos são válidos e completos
-    if (astroData && astroData.astroData && astroData.dailyAdvice && astroData.conselhosData && astroData.chineseZodiac) {
-      console.log("Navegando para zodiacHoroscopeFirstEscorpiaoScreen com dados carregados.\n\n\n");
-      navigation.navigate('zodiacHoroscopeFirstEscorpiaoScreen', { 
+      if (astroData && astroData.astroData && astroData.dailyAdvice && astroData.conselhosData && astroData.chineseZodiac) {
+        console.log("Navegando para zodiacHoroscopeFirstEscorpiaoScreen com dados carregados.");
+        navigation.navigate('zodiacHoroscopeFirstEscorpiaoScreen', {
           astroData: astroData.astroData,
           dailyAdvice: astroData.dailyAdvice,
           conselhoProfissional: astroData.conselhosData.profissional,
@@ -208,40 +252,38 @@ async function handleRegister() {
           conselhoAfetivo: astroData.conselhosData.afetivo,
           userData: userData,
           name: name,
-          chineseZodiac: astroData.chineseZodiac  
-      });
-      
-    } else {
+          chineseZodiac: astroData.chineseZodiac
+        });
+      } else {
         console.log("Erro: Dados astrológicos incompletos ou inválidos.");
         Alert.alert('Erro', 'Não foi possível obter os dados astrológicos completos. Por favor, tente novamente.');
         setIsLoading(false);
         return;
-    }
-  } catch (error) {
+      }
+    } catch (error) {
       setIsLoading(false);
       if (error.message === "Tempo limite excedido") {
-          Alert.alert('Erro', 'Ocorreu algum erro de conexão.');
+        Alert.alert('Erro', 'Ocorreu algum erro de conexão.');
       } else {
-          console.error("Erro ao buscar dados astrológicos:", error);
-          Alert.alert('Erro', 'Ocorreu um erro ao buscar os dados. Por favor, tente novamente.');
+        console.error("Erro ao buscar dados astrológicos:", error);
+        Alert.alert('Erro', 'Ocorreu um erro ao buscar os dados. Por favor, tente novamente.');
       }
-  } finally {
+    } finally {
       setIsLoading(false);
+    }
   }
-}
 
-
-function timeout(ms) {
+  function timeout(ms) {
     return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            reject(new Error("Tempo limite excedido"));
-        }, ms);
+      setTimeout(() => {
+        reject(new Error("Tempo limite excedido"));
+      }, ms);
     });
-}
+  }
 
   return (
     <ImageBackground source={require('../../assets/images/bg1.jpg')} style={styles.container}>
-      <KeyboardAwareScrollView 
+      <KeyboardAwareScrollView
         style={styles.scrollContainer}
         contentContainerStyle={styles.scrollContentContainer}
         resetScrollToCoords={{ x: 0, y: 0 }}
@@ -282,21 +324,38 @@ function timeout(ms) {
           {isCheckingBirthDate && <Text style={styles.messageChecking}>Aguarde...</Text>}
           {birthDateValidation === true && <Text style={styles.messageValid}>Data válida.</Text>}
           {birthDateValidation === false && <Text style={styles.messageInvalid}>Por favor, insira uma data válida.</Text>}
-          <TouchableOpacity 
-              style={[styles.button, (isLoading || isCheckingBirthplace || isCheckingBirthDate || birthplaceValidation === false || birthDateValidation === false) ? styles.buttonLoading : {}]} 
-              onPress={handleRegister} 
-              disabled={isLoading || isCheckingBirthplace || isCheckingBirthDate || birthplaceValidation === false || birthDateValidation === false}
-            >
-              <Text style={styles.buttonText}>
-                  {isLoading || isCheckingBirthplace || isCheckingBirthDate ? 'Aguarde...' : 'Prosseguir'}
-              </Text>
+
+          <Text style={styles.title}>Horário de Nascimento (opcional)</Text>
+          <TextInputMask
+            type={'datetime'}
+            options={{
+              format: 'HH:mm'
+            }}
+            value={birthTime}
+            onChangeText={setBirthTime}
+            style={styles.input}
+            placeholder="HH:MM"
+            keyboardType="numeric"
+          />
+          {isCheckingBirthTime && <Text style={styles.messageChecking}>Aguarde...</Text>}
+          {birthTimeValidation === true && <Text style={styles.messageValid}>Horário válido.</Text>}
+          {birthTimeValidation === false && <Text style={styles.messageInvalid}>Por favor, insira um horário válido ou deixe em branco.</Text>}
+
+          <TouchableOpacity
+            style={[styles.button, (isLoading || isCheckingBirthplace || isCheckingBirthDate || isCheckingBirthTime || birthplaceValidation === false || birthDateValidation === false || birthTimeValidation === false) ? styles.buttonLoading : {}]}
+            onPress={handleRegister}
+            disabled={isLoading || isCheckingBirthplace || isCheckingBirthDate || isCheckingBirthTime || birthplaceValidation === false || birthDateValidation === false || birthTimeValidation === false}
+          >
+            <Text style={styles.buttonText}>
+              {isLoading || isCheckingBirthplace || isCheckingBirthDate || isCheckingBirthTime ? 'Aguarde...' : 'Prosseguir'}
+            </Text>
           </TouchableOpacity>
-    
-          <TouchableOpacity 
-            style={styles.button} 
-            onPress={() => navigation.goBack()} 
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.goBack()}
             disabled={isLoading}
-        >
+          >
             <Text style={styles.buttonText}>Voltar</Text>
           </TouchableOpacity>
         </Animatable.View>
@@ -356,8 +415,8 @@ const styles = StyleSheet.create({
   },
   optionalText: {
     color: 'gray',
-    fontSize: 14,  // ou outro tamanho de fonte que preferir
-    marginBottom: 5,  // ou outra margem que preferir
+    fontSize: 14,
+    marginBottom: 5,
   },
   button: {
     backgroundColor: '#003366',
@@ -367,17 +426,17 @@ const styles = StyleSheet.create({
     marginTop: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom:5
+    marginBottom: 5,
   },
   buttonLoading: {
-    backgroundColor: '#aaa', // ou qualquer outra cor para indicar que o botão está desativado
+    backgroundColor: '#aaa',
   },
   buttonText: {
     fontSize: 18,
     color: '#fff',
     fontWeight: 'bold',
   },
-    error: {
+  error: {
     color: 'red',
     fontSize: 14,
     marginBottom: 10,
