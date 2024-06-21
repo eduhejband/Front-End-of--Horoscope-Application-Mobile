@@ -1,18 +1,20 @@
-import React, { useEffect } from "react";
-import { View, BackHandler, SafeAreaView, StatusBar, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, Dimensions } from "react-native";
+import React, { useState } from "react";
+import { View, BackHandler, SafeAreaView, StatusBar, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, Dimensions, Alert, ActivityIndicator } from "react-native";
 import { Colors } from "../../constants/styles";
 import { useFocusEffect } from '@react-navigation/native';
-
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import 'react-native-get-random-values';
 
 const { width, height } = Dimensions.get('window');
 
 const OnboardingScreen = ({ navigation }) => {
+    const [isLoading, setIsLoading] = useState(false);
 
     const backAction = () => {
         BackHandler.exitApp();
         return true;
-    }
+    };
 
     useFocusEffect(
         React.useCallback(() => {
@@ -20,6 +22,40 @@ const OnboardingScreen = ({ navigation }) => {
             return () => BackHandler.removeEventListener("hardwareBackPress", backAction);
         }, [])
     );
+
+    const handleStartPress = async () => {
+        try {
+            setIsLoading(true);
+            const userId = await AsyncStorage.getItem('userId');
+            if (userId) {
+                const response = await axios.post(
+                    `https://serverdados-8805a7170f22.herokuapp.com/last_login/last_astro_data/${userId}`,
+                    null, // Sem payload, apenas uma requisição POST
+                    {
+                        headers: {
+                            'Authorization': 'Bearer sOMx3opuNm2e26BqKNNiVgsUmWISjVWkyQJGkKmGpvZNFibmoN2uxe3FCCfGSt7vbK9JFNLvm607zyjN7RHTV64Z2pK7sDgbjTegM8I10poSRpzNkApyCu0XtHIQIMrqNN8Us8c40CI3sX9Eo0RKylOV2Lt80dJckgQGec47YcIdTSivy3nU0R7KW5PbMi5OsuwEu0bZRAK818xcOepft4c4v2dIxWRNPEY7TtliPObSiVa7Zs266658b33d6568'
+                        }
+                    }
+                );
+
+                if (response.status === 200 && response.data.success) {
+                    console.log('ID encontrado no banco e último login atualizado.');
+                    navigation.navigate('UserDashboard'); // Nome da tela para onde o usuário deve ser redirecionado se estiver logado
+                } else {
+                    console.log('ID não encontrado no banco.');
+                    navigation.navigate('Signin');
+                }
+            } else {
+                navigation.navigate('Signin');
+            }
+        } catch (error) {
+            console.error('Erro ao verificar o ID no banco:', error);
+            Alert.alert('Erro', 'Não foi possível verificar sua conta. Por favor, tente novamente.');
+            navigation.navigate('Signin');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -38,8 +74,16 @@ const OnboardingScreen = ({ navigation }) => {
                 </View>
                 
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Signin')}>
-                        <Text style={styles.buttonText}>Iniciar</Text>
+                    <TouchableOpacity 
+                        style={[styles.button, isLoading && { backgroundColor: '#D3D3D3' }]} 
+                        onPress={handleStartPress}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            <ActivityIndicator size="small" color="#000000" />
+                        ) : (
+                            <Text style={styles.buttonText}>Iniciar</Text>
+                        )}
                     </TouchableOpacity>
                 </View>
             </ImageBackground>
@@ -63,7 +107,6 @@ const styles = StyleSheet.create({
         marginTop: 70, // Ajuste de espaçamento do topo
     },
     logo: {
-        
         width: 280,
         height: 80,
     },
@@ -87,9 +130,9 @@ const styles = StyleSheet.create({
         textShadowColor: 'black',
         textShadowOffset: { width: -1, height: 1 },
         textShadowRadius: 10,
-        marginTop:20,
-        marginLeft:20,
-        marginRight:20,
+        marginTop: 20,
+        marginLeft: 20,
+        marginRight: 20,
     },
     buttonContainer: {
         flex: 1,
@@ -104,7 +147,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10,
-  
     },
     buttonText: {
         color: '#000000',

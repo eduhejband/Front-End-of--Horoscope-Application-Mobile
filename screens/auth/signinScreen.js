@@ -3,7 +3,9 @@ import { ImageBackground, View, Text, StyleSheet, TextInput, TouchableOpacity, A
 import * as Animatable from 'react-native-animatable';
 import { TextInputMask } from 'react-native-masked-text';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAstroData } from '../getAstroData/getAstroData';
+import 'react-native-get-random-values';
 
 export default function SigninScreen({ navigation }) {
   const [name, setName] = useState('');
@@ -198,16 +200,27 @@ export default function SigninScreen({ navigation }) {
     const formattedBirthplace = birthplace.split(',').map(item => item.trim()).join('.');
     const formattedBirthTime = birthTime || '12:00';
 
+    // Gerar um ID numérico
+    const userId = Math.floor(Math.random() * 1000000);
+
     const userData = {
+      userId: userId,
       name: name,
       data_nascimento: formattedBirthDate,
       hora_nascimento: formattedBirthTime,
       cidade_nascimento: formattedBirthplace
+      
     };
 
     try {
+      // Remover ID do usuário existente
+      await AsyncStorage.removeItem('userId');
+
+      // Armazenar o novo ID do usuário no AsyncStorage
+      await AsyncStorage.setItem('userId', userId.toString());
+
       const astroData = await Promise.race([
-        getAstroData(userData),
+        getAstroData(userData), // Passar userId para getAstroData
         timeout(30000)
       ]);
 
@@ -221,7 +234,7 @@ export default function SigninScreen({ navigation }) {
           conselhoProfissional: astroData.conselhosData.profissional,
           conselhoSaude: astroData.conselhosData.saude,
           conselhoAfetivo: astroData.conselhosData.afetivo,
-          userData: userData,
+          userData: { ...userData, userId },
           name: name,
           chineseZodiac: astroData.chineseZodiac
         });
