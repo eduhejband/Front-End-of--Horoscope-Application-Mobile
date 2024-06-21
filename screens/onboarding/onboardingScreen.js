@@ -49,8 +49,7 @@ const OnboardingScreen = ({ navigation }) => {
                 navigation.navigate('Signin');
             }
         } catch (error) {
-            console.error('Erro ao verificar o ID no banco:', error);
-            Alert.alert('Erro', 'Não foi possível verificar sua conta. Por favor, tente novamente.');
+            console.log('Usuario indo pro signin');
             navigation.navigate('Signin');
         } finally {
             setIsLoading(false);
