@@ -5,6 +5,7 @@ import { TextInputMask } from 'react-native-masked-text';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAstroData } from '../getAstroData/getAstroData';
+import NetInfo from '@react-native-community/netinfo'; // Importar NetInfo
 import 'react-native-get-random-values';
 
 export default function SigninScreen({ navigation }) {
@@ -171,6 +172,14 @@ export default function SigninScreen({ navigation }) {
   async function handleRegister() {
     setIsLoading(true);
 
+    // Verificar conexão com a internet
+    const state = await NetInfo.fetch();
+    if (!state.isConnected) {
+      Alert.alert('Sem Conexão', 'Por favor, verifique sua conexão com a internet e tente novamente.');
+      setIsLoading(false);
+      return;
+    }
+
     if (!name || birthplaceValidation === false || !birthplace || !birthDate || birthDateValidation === false) {
       Alert.alert('Campos obrigatórios', 'Por favor, preencha os campos corretamente.');
       setIsLoading(false);
@@ -209,7 +218,6 @@ export default function SigninScreen({ navigation }) {
       data_nascimento: formattedBirthDate,
       hora_nascimento: formattedBirthTime,
       cidade_nascimento: formattedBirthplace
-      
     };
 
     try {
@@ -288,7 +296,7 @@ export default function SigninScreen({ navigation }) {
           />
           {isCheckingBirthplace && <Text style={styles.messageChecking}>Aguarde...</Text>}
           {birthplaceValidation === true && <Text style={styles.messageValid}>Local válido.</Text>}
-          {birthplaceValidation === false && <Text style={styles.messageInvalid}>Local inválido.</Text>}
+          {birthplaceValidation === false && <Text style={styles.messageInvalid}>Local inválido ou sem conexão com a internet.</Text>}
 
           <Text style={styles.title}>Data de Nascimento</Text>
           <TextInputMask

@@ -4,6 +4,7 @@ import { Colors } from "../../constants/styles";
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import NetInfo from '@react-native-community/netinfo'; // Importar NetInfo
 import 'react-native-get-random-values';
 
 const { width, height } = Dimensions.get('window');
@@ -25,12 +26,18 @@ const OnboardingScreen = ({ navigation }) => {
 
     const handleStartPress = async () => {
         try {
+            const state = await NetInfo.fetch();
+            if (!state.isConnected) {
+                Alert.alert('Sem Conexão', 'Por favor, verifique sua conexão com a internet e tente novamente.');
+                return;
+            }
+
             setIsLoading(true);
             const userId = await AsyncStorage.getItem('userId');
             if (userId) {
                 const response = await axios.post(
                     `https://serverdados-8805a7170f22.herokuapp.com/last_login/last_astro_data/${userId}`,
-                    null, // Sem payload, apenas uma requisição POST
+                    null,
                     {
                         headers: {
                             'Authorization': 'Bearer sOMx3opuNm2e26BqKNNiVgsUmWISjVWkyQJGkKmGpvZNFibmoN2uxe3FCCfGSt7vbK9JFNLvm607zyjN7RHTV64Z2pK7sDgbjTegM8I10poSRpzNkApyCu0XtHIQIMrqNN8Us8c40CI3sX9Eo0RKylOV2Lt80dJckgQGec47YcIdTSivy3nU0R7KW5PbMi5OsuwEu0bZRAK818xcOepft4c4v2dIxWRNPEY7TtliPObSiVa7Zs266658b33d6568'
@@ -49,7 +56,7 @@ const OnboardingScreen = ({ navigation }) => {
                 navigation.navigate('Signin');
             }
         } catch (error) {
-            console.log('Usuario indo pro signin');
+            console.log('Erro ao tentar fazer login: ', error);
             navigation.navigate('Signin');
         } finally {
             setIsLoading(false);
@@ -103,7 +110,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        marginTop: 70, // Ajuste de espaçamento do topo
+        marginTop: 70,
     },
     logo: {
         width: 280,
@@ -137,7 +144,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
-        marginBottom: 40, // Ajuste de espaçamento da parte inferior
+        marginBottom: 40,
     },
     button: {
         width: width - 60,
