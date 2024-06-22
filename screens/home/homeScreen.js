@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { SafeAreaView, View, StatusBar, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, FlatList, Alert, Linking } from "react-native";
+import { SafeAreaView, View, StatusBar, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, FlatList, Alert, Linking, Image } from "react-native";
 import { Colors, Fonts, Sizes } from "../../constants/styles";
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -89,9 +89,8 @@ const zodiacScreenMapping = {
 const HomeScreen = ({ navigation, name }) => {
     const [userData, setUserData] = useState(null);
     const [state, setState] = useState({
-        currentSelectedZodiacSign: zodiacSignsList[9].zodiacSignName,
+        currentSelectedZodiacSign: zodiacSignsList[0].zodiacSignName,
     });
-    const updateState = (data) => setState((state) => ({ ...state, ...data }));
 
     const fetchUserData = async () => {
         try {
@@ -118,22 +117,7 @@ const HomeScreen = ({ navigation, name }) => {
         }, [])
     );
 
-    const callWhatsApp = (phone) => {
-        let url = `whatsapp://send?phone=${phone}`;
-        Linking.canOpenURL(url)
-            .then((supported) => {
-                if (!supported) {
-                    console.log('WhatsApp não está instalado neste dispositivo.');
-                    Alert.alert('Erro', 'WhatsApp não está instalado neste dispositivo.');
-                } else {
-                    return Linking.openURL(url);
-                }
-            })
-            .catch((err) => {
-                console.error('Um erro ocorreu', err);
-                Alert.alert('Erro', 'Ocorreu um erro ao tentar abrir o WhatsApp.');
-            });
-    };
+    const updateState = (data) => setState((state) => ({ ...state, ...data }));
 
     const handleEditInformation = () => {
         Alert.alert(
@@ -173,7 +157,6 @@ const HomeScreen = ({ navigation, name }) => {
                 {
                     text: "Confirmar",
                     onPress: () => {
-                        // Implemente a lógica de atualização aqui
                         console.log("Dados atualizados");
                         Alert.alert('Sucesso', 'Seus dados foram atualizados com sucesso.');
                     }
@@ -196,7 +179,6 @@ const HomeScreen = ({ navigation, name }) => {
                 {
                     text: "Confirmar",
                     onPress: () => {
-                        // Implemente a lógica de apagar registro aqui
                         console.log("Registro apagado");
                         Alert.alert('Sucesso', 'Seu registro foi apagado com sucesso.');
                     }
@@ -346,7 +328,7 @@ const HomeScreen = ({ navigation, name }) => {
                 style={styles.zodiacSignsWrapStyle}
             >
                 {
-                    currentSelectedZodiacSign !== item.zodiacSignName
+                    state.currentSelectedZodiacSign !== item.zodiacSignName
                         ? <View style={styles.zodiacSignImageWrapStyle}>
                             <Image
                                 source={item.zodiacSignImage}
@@ -442,29 +424,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: '100%',
         paddingVertical: Sizes.fixPadding - 2.0,
-    },
-    phoneIconWrapStyle: {
-        width: 20.0,
-        height: 20.0,
-        borderRadius: 10.0,
-        backgroundColor: Colors.primaryColor,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    bannerCallInfoWrapStyle: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: Colors.whiteColor,
-        alignSelf: 'flex-start',
-        padding: Sizes.fixPadding - 7.0,
-        borderRadius: Sizes.fixPadding - 7.0,
-    },
-    bannerImageStyle: {
-        width: width - 70.0,
-        height: 160.0,
-        flexDirection: 'row',
-        paddingTop: Sizes.fixPadding + 5.0,
-        paddingHorizontal: Sizes.fixPadding,
     },
     buttonContainer: {
         marginTop: 30,

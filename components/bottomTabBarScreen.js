@@ -4,7 +4,8 @@ import { Colors, Fonts, Sizes } from "../constants/styles";
 import HomeScreen from "../screens/home/homeScreen";
 import { useFocusEffect } from '@react-navigation/native';
 
-const BottomTabBarScreen = ({ navigation }) => {
+const BottomTabBarScreen = ({ navigation, route }) => {
+    const { name } = route.params; // Recebe o nome dos parâmetros de navegação
 
     const backAction = () => {
         backClickCount === 1 ? BackHandler.exitApp() : _spring();
@@ -37,8 +38,8 @@ const BottomTabBarScreen = ({ navigation }) => {
         <SafeAreaView style={{ flex: 1 }}>
             <StatusBar translucent={false} backgroundColor={Colors.primaryColor} />
             <View style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
-                {/* Renderiza a HomeScreen sem passar parâmetros adicionais */}
-                <HomeScreen navigation={navigation} />
+                {/* Passa o nome para a HomeScreen */}
+                <HomeScreen navigation={navigation} name={name} />
             </View>
             {
                 backClickCount === 1

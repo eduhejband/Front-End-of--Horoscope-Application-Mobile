@@ -4,7 +4,7 @@ import * as Animatable from 'react-native-animatable';
 import { TextInputMask } from 'react-native-masked-text';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { registerAstroData } from '../getAstroData/getAstroData'; // Importar a função de registro atualizada
+import { registerAstroData } from '../getAstroData/getAstroData';
 import NetInfo from '@react-native-community/netinfo';
 import 'react-native-get-random-values';
 
@@ -114,7 +114,7 @@ export default function SigninScreen({ navigation }) {
       const timerId = setTimeout(() => {
         validateBirthDate(birthDate);
         setIsCheckingBirthDate(false);
-      }, 1000); // 1 segundo de atraso
+      }, 1000);
 
       return () => {
         clearTimeout(timerId);
@@ -157,7 +157,7 @@ export default function SigninScreen({ navigation }) {
 
       const timerId = setTimeout(() => {
         checkBirthTimeValidity();
-      }, 1000); // 1 segundo de atraso
+      }, 1000);
 
       return () => {
         clearTimeout(timerId);
@@ -213,7 +213,7 @@ export default function SigninScreen({ navigation }) {
     const userId = Math.floor(Math.random() * 1000000);
 
     const userData = {
-      id: userId, // Atualize a chave para 'id'
+      id: userId,
       name: name,
       data_nascimento: formattedBirthDate,
       hora_nascimento: formattedBirthTime,
@@ -221,10 +221,7 @@ export default function SigninScreen({ navigation }) {
     };
 
     try {
-      // Remover ID do usuário existente
       await AsyncStorage.removeItem('userId');
-
-      // Armazenar o novo ID do usuário no AsyncStorage
       await AsyncStorage.setItem('userId', userId.toString());
 
       const registerResponse = await Promise.race([
@@ -236,7 +233,7 @@ export default function SigninScreen({ navigation }) {
 
       if (registerResponse) {
         console.log("Navegando para BottomTabBar.");
-        navigation.navigate('BottomTabBar');
+        navigation.navigate('BottomTabBar', { name });
       } else {
         console.log("Erro: Falha no registro.");
         Alert.alert('Erro', 'Não foi possível completar o registro. Por favor, tente novamente.');

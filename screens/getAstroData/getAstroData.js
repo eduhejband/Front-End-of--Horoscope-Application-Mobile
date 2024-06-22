@@ -12,7 +12,7 @@ export const registerAstroData = async (userData) => {
             cidade_nascimento: userData?.cidade_nascimento,
         }, {
             headers: {
-                'Authorization': 'Bearer VYFv1RodXIH4hMDjn8UpcWvfsEwyD7Dq6XV4wS3bNWyzU4V0ndnR7dxiBJVxTnvPLbIqyzWwlByECbeRr6nMDNpAbHyz7rAGAY1w54E09OjD0vPTDuHI2j2CHbIqaefPRfD3MyvBqQLu4F21trvA03uYgVHQJThwkl5Jc0dBCiATRrjCwQJeFUZF0KZImBdGCdhZ4bAF7J8JMSnFIpCooHKIv2VgsYptp80MJ6VPGRwdPZ7nFwt1Twzxp6znnSJi'
+                'Authorization': 'Bearer OBviLmYRN4RboSLNyTqXulmrl22WxINY0PGKond7UpGVGVfuYWWkwWM7OtqusbA8NoV9eM4YIeyH8iF7DDfwwyAqx2zavMrhdBZD8xw6o7xRRMeh3wuwoOk4tgTfL5zZMsHgX7ZWFGnRqPxC9VzDSfK4xKj8qqbX4tOAZOq7nSzVLPMe5WeFd2pIIUqIglTp9xwz0qlVeXwTfWcOUADqajO8vHfJGcikPsA3RWb8EjocvPKHVCA1yDvCt27yjDPb'
             }
         });
 
