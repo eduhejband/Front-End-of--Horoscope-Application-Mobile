@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { SafeAreaView, View, StatusBar, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, FlatList, Alert, Linking, Image } from "react-native";
+import { SafeAreaView, View, StatusBar, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, FlatList, Alert, Image } from "react-native";
 import { Colors, Fonts, Sizes } from "../../constants/styles";
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,66 +9,18 @@ import { useFocusEffect } from '@react-navigation/native';
 const { width, height } = Dimensions.get('window');
 
 const zodiacSignsList = [
-    {
-        id: '1',
-        zodiacSignImage: require('../../assets/images/zodiac_signs/gemini.png'),
-        zodiacSignName: 'Gêmeos'
-    },
-    {
-        id: '2',
-        zodiacSignImage: require('../../assets/images/zodiac_signs/aries.png'),
-        zodiacSignName: 'Áries',
-    },
-    {
-        id: '3',
-        zodiacSignImage: require('../../assets/images/zodiac_signs/taurus.png'),
-        zodiacSignName: 'Touro',
-    },
-    {
-        id: '4',
-        zodiacSignImage: require('../../assets/images/zodiac_signs/pisces.png'),
-        zodiacSignName: 'Peixes',
-    },
-    {
-        id: '5',
-        zodiacSignImage: require('../../assets/images/zodiac_signs/aquarius.png'),
-        zodiacSignName: 'Aquário',
-    },
-    {
-        id: '6',
-        zodiacSignImage: require('../../assets/images/zodiac_signs/leo.png'),
-        zodiacSignName: 'Leão',
-    },
-    {
-        id: '7',
-        zodiacSignImage: require('../../assets/images/zodiac_signs/cancer.png'),
-        zodiacSignName: 'Câncer',
-    },
-    {
-        id: '8',
-        zodiacSignImage: require('../../assets/images/zodiac_signs/sagitarius.png'),
-        zodiacSignName: 'Sagitário',
-    },
-    {
-        id: '9',
-        zodiacSignImage: require('../../assets/images/zodiac_signs/scorpio.png'),
-        zodiacSignName: 'Escorpião',
-    },
-    {
-        id: '10',
-        zodiacSignImage: require('../../assets/images/zodiac_signs/libra.png'),
-        zodiacSignName: 'Libra',
-    },
-    {
-        id: '11',
-        zodiacSignImage: require('../../assets/images/zodiac_signs/vigro.png'),
-        zodiacSignName: 'Virgem',
-    },
-    {
-        id: '12',
-        zodiacSignImage: require('../../assets/images/zodiac_signs/capricorn.png'),
-        zodiacSignName: 'Capricórnio',
-    },
+    { id: '1', zodiacSignImage: require('../../assets/images/zodiac_signs/gemini.png'), zodiacSignName: 'Gêmeos' },
+    { id: '2', zodiacSignImage: require('../../assets/images/zodiac_signs/aries.png'), zodiacSignName: 'Áries' },
+    { id: '3', zodiacSignImage: require('../../assets/images/zodiac_signs/taurus.png'), zodiacSignName: 'Touro' },
+    { id: '4', zodiacSignImage: require('../../assets/images/zodiac_signs/pisces.png'), zodiacSignName: 'Peixes' },
+    { id: '5', zodiacSignImage: require('../../assets/images/zodiac_signs/aquarius.png'), zodiacSignName: 'Aquário' },
+    { id: '6', zodiacSignImage: require('../../assets/images/zodiac_signs/leo.png'), zodiacSignName: 'Leão' },
+    { id: '7', zodiacSignImage: require('../../assets/images/zodiac_signs/cancer.png'), zodiacSignName: 'Câncer' },
+    { id: '8', zodiacSignImage: require('../../assets/images/zodiac_signs/sagitarius.png'), zodiacSignName: 'Sagitário' },
+    { id: '9', zodiacSignImage: require('../../assets/images/zodiac_signs/scorpio.png'), zodiacSignName: 'Escorpião' },
+    { id: '10', zodiacSignImage: require('../../assets/images/zodiac_signs/libra.png'), zodiacSignName: 'Libra' },
+    { id: '11', zodiacSignImage: require('../../assets/images/zodiac_signs/vigro.png'), zodiacSignName: 'Virgem' },
+    { id: '12', zodiacSignImage: require('../../assets/images/zodiac_signs/capricorn.png'), zodiacSignName: 'Capricórnio' },
 ];
 
 const zodiacScreenMapping = {
@@ -88,9 +40,7 @@ const zodiacScreenMapping = {
 
 const HomeScreen = ({ navigation, name }) => {
     const [userData, setUserData] = useState(null);
-    const [state, setState] = useState({
-        currentSelectedZodiacSign: zodiacSignsList[0].zodiacSignName,
-    });
+    const [currentSelectedZodiacSign, setCurrentSelectedZodiacSign] = useState(null);
 
     const fetchUserData = async () => {
         try {
@@ -117,28 +67,13 @@ const HomeScreen = ({ navigation, name }) => {
         }, [])
     );
 
-    const updateState = (data) => setState((state) => ({ ...state, ...data }));
-
     const handleEditInformation = () => {
         Alert.alert(
             "Retornar",
             "Você realmente deseja retornar para o início?",
             [
-                {
-                    text: "Cancelar",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                {
-                    text: "Confirmar",
-                    onPress: async () => {
-                        try {
-                            navigation.navigate('Onboarding'); // Retorna para a tela anterior
-                        } catch (error) {
-                            console.error(error);
-                        }
-                    }
-                }
+                { text: "Cancelar", onPress: () => console.log("Cancel Pressed"), style: "cancel" },
+                { text: "Confirmar", onPress: () => navigation.navigate('Onboarding') }
             ],
             { cancelable: false }
         );
@@ -149,18 +84,8 @@ const HomeScreen = ({ navigation, name }) => {
             "Atualizar Dados",
             "Deseja atualizar seus dados?",
             [
-                {
-                    text: "Cancelar",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                {
-                    text: "Confirmar",
-                    onPress: () => {
-                        console.log("Dados atualizados");
-                        Alert.alert('Sucesso', 'Seus dados foram atualizados com sucesso.');
-                    }
-                }
+                { text: "Cancelar", onPress: () => console.log("Cancel Pressed"), style: "cancel" },
+                { text: "Confirmar", onPress: () => Alert.alert('Sucesso', 'Seus dados foram atualizados com sucesso.') }
             ],
             { cancelable: false }
         );
@@ -171,18 +96,8 @@ const HomeScreen = ({ navigation, name }) => {
             "Apagar Registro",
             "Tem certeza de que deseja apagar seu registro?",
             [
-                {
-                    text: "Cancelar",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                {
-                    text: "Confirmar",
-                    onPress: () => {
-                        console.log("Registro apagado");
-                        Alert.alert('Sucesso', 'Seu registro foi apagado com sucesso.');
-                    }
-                }
+                { text: "Cancelar", onPress: () => console.log("Cancel Pressed"), style: "cancel" },
+                { text: "Confirmar", onPress: () => Alert.alert('Sucesso', 'Seu registro foi apagado com sucesso.') }
             ],
             { cancelable: false }
         );
@@ -193,11 +108,9 @@ const HomeScreen = ({ navigation, name }) => {
             <TouchableOpacity style={[styles.button, styles.buttonMarginTop]} onPress={handleEditInformation}>
                 <Text style={styles.buttonText}>Retornar</Text>
             </TouchableOpacity>
-
             <TouchableOpacity style={[styles.button, styles.buttonMarginTop]} onPress={handleUpdateInformation}>
                 <Text style={styles.buttonText}>Atualizar Dados</Text>
             </TouchableOpacity>
-
             <TouchableOpacity style={[styles.button, styles.buttonMarginTop]} onPress={handleDeleteInformation}>
                 <Text style={styles.buttonText}>Apagar Registro</Text>
             </TouchableOpacity>
@@ -241,11 +154,7 @@ const HomeScreen = ({ navigation, name }) => {
                     >
                         <ImageBackground
                             source={require('../../assets/images/horoscopes/month_horoscope.png')}
-                            style={{
-                                height: height / 4.7,
-                                padding: space_x,
-                                justifyContent: 'flex-end',
-                            }}
+                            style={{ height: height / 4.7, padding: space_x, justifyContent: 'flex-end' }}
                             borderRadius={space_x - 5.0}
                         >
                             <Text style={{ ...Fonts.whiteColor12Bold }}>
@@ -261,11 +170,7 @@ const HomeScreen = ({ navigation, name }) => {
                     >
                         <ImageBackground
                             source={require('../../assets/images/horoscopes/chinese_zodiac_horoscope.png')}
-                            style={{
-                                height: height / 4.7,
-                                padding: space_x,
-                                justifyContent: 'flex-end',
-                            }}
+                            style={{ height: height / 4.7, padding: space_x, justifyContent: 'flex-end' }}
                             borderRadius={space_x - 5.0}
                         >
                             <Text style={{ ...Fonts.whiteColor12Bold }}>
@@ -281,11 +186,7 @@ const HomeScreen = ({ navigation, name }) => {
                     >
                         <ImageBackground
                             source={require('../../assets/conselho.png')}
-                            style={{
-                                height: height / 4.7,
-                                padding: space_x,
-                                justifyContent: 'flex-end',
-                            }}
+                            style={{ height: height / 4.7, padding: space_x, justifyContent: 'flex-end' }}
                             borderRadius={space_x - 5.0}
                         >
                             <Text style={{ ...Fonts.whiteColor12Bold }}>
@@ -317,7 +218,7 @@ const HomeScreen = ({ navigation, name }) => {
             <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => {
-                    updateState({ currentSelectedZodiacSign: item.zodiacSignName });
+                    setCurrentSelectedZodiacSign(item.zodiacSignName);
                     const screenName = zodiacScreenMapping[item.zodiacSignName];
                     if (screenName) {
                         navigation.push(screenName, { item: item });
@@ -328,18 +229,9 @@ const HomeScreen = ({ navigation, name }) => {
                 style={styles.zodiacSignsWrapStyle}
             >
                 {
-                    state.currentSelectedZodiacSign !== item.zodiacSignName
-                        ? <View style={styles.zodiacSignImageWrapStyle}>
-                            <Image
-                                source={item.zodiacSignImage}
-                                style={{ width: 30.0, height: 30.0, resizeMode: 'contain' }}
-                            />
-                        </View>
-                        : <LinearGradient
-                            colors={[
-                                Colors.primaryColor,
-                                Colors.secondaryColor,
-                            ]}
+                    currentSelectedZodiacSign === item.zodiacSignName
+                        ? <LinearGradient
+                            colors={[Colors.primaryColor, Colors.secondaryColor]}
                             style={styles.zodiacSignImageWrapStyle}
                         >
                             <Image
@@ -347,6 +239,12 @@ const HomeScreen = ({ navigation, name }) => {
                                 style={{ width: 30.0, height: 30.0, resizeMode: 'contain' }}
                             />
                         </LinearGradient>
+                        : <View style={styles.zodiacSignImageWrapStyle}>
+                            <Image
+                                source={item.zodiacSignImage}
+                                style={{ width: 30.0, height: 30.0, resizeMode: 'contain' }}
+                            />
+                        </View>
                 }
                 <Text numberOfLines={1} style={{ marginTop: Sizes.fixPadding - 7.0, ...Fonts.blackColor10Regular }}>
                     {item.zodiacSignName}
@@ -354,10 +252,7 @@ const HomeScreen = ({ navigation, name }) => {
             </TouchableOpacity>
         );
         return (
-            <View style={{
-                paddingHorizontal: Sizes.fixPadding + 6.5,
-                paddingVertical: Sizes.fixPadding * 2.0,
-            }}>
+            <View style={{ paddingHorizontal: Sizes.fixPadding + 6.5, paddingVertical: Sizes.fixPadding * 2.0 }}>
                 <Text style={{ marginTop: 5, marginHorizontal: Sizes.fixPadding * 0.5, marginBottom: Sizes.fixPadding, ...Fonts.blackColor16Bold }}>
                     Signos do zodíaco
                 </Text>
