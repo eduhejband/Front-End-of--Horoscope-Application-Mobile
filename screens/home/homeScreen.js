@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { SafeAreaView, View, StatusBar, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, Image, FlatList } from "react-native";
-import { Colors, Fonts, Sizes, } from "../../constants/styles";
+import { SafeAreaView, View, StatusBar, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, FlatList, Alert, Linking } from "react-native";
+import { Colors, Fonts, Sizes } from "../../constants/styles";
 import { LinearGradient } from 'expo-linear-gradient';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Linking, Alert } from 'react-native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -81,67 +80,43 @@ const zodiacScreenMapping = {
     'Leão': 'zodiacHoroscopeDetailLeaoScreen',
     'Câncer': 'zodiacHoroscopeDetailCancerScreen',
     'Sagitário': 'zodiacHoroscopeDetailSagitarioScreen',
-    'Escorpião': 'zodiacHoroscopeDetailEscorpiaoScreen', // Nota: O nome do signo está em minúsculas e em português
+    'Escorpião': 'zodiacHoroscopeDetailEscorpiaoScreen',
     'Libra': 'zodiacHoroscopeDetailLibraScreen',
-    'Virgem': 'zodiacHoroscopeDetailVirgemScreen', // Nota: Parece haver um erro de digitação. Deveria ser "Virgo"?
+    'Virgem': 'zodiacHoroscopeDetailVirgemScreen',
     'Capricórnio': 'zodiacHoroscopeDetailCapricornioScreen',
 };
 
+const HomeScreen = ({ navigation, name }) => {
+    const [userData, setUserData] = useState(null);
+    const [state, setState] = useState({
+        currentSelectedZodiacSign: zodiacSignsList[9].zodiacSignName,
+    });
+    const updateState = (data) => setState((state) => ({ ...state, ...data }));
 
-const bannersList = [
-    {
-        id: '1',
-        title: 'Lide com seu stress',
-        description: 'Consulte nossos especialistas afim de poder ver as melhores formas de curar o que te estressa',
-    },
-    {
-        id: '2',
-        title: 'Relacionamentos',
-        description: 'Descubra quem será o amor da sua vida, e descubra como evitar relacionamentos tóxicos.',
-    },
-];
-
-const topAstrologerList = [
-    {
-        id: '1',
-        astrologerImage: require('../../assets/images/users/user1.png'),
-        astrologerName: 'Roberto Garcia',
-        astrologerSpeciality: 'Amor e Dinheiro',
-        astrologerPromotion:'50% de desconto',
-        astrologerScreen: 'AstrologerDetail1'
-    },
-    {
-        id: '2',
-        astrologerImage: require('../../assets/images/users/user2.png'),
-        astrologerName: 'Ricardo Silva',
-        astrologerSpeciality: 'Paz e Segurança',
-        astrologerPromotion:'Primeira consulta grátis',
-        astrologerScreen: 'AstrologerDetail2'
-    },
-    {
-        id: '3',
-        astrologerImage: require('../../assets/images/users/user3.png'),
-        astrologerName: 'Alice Miranda',
-        astrologerSpeciality: 'Amor e Saúde',
-        astrologerPromotion:'Pague 2 e receba 3 consultas',
-        astrologerScreen: 'AstrologerDetail3'
-    },
-];
-
-const HomeScreen = ({ navigation, userData, name, phone, astroData, chineseZodiac,conselhoProfissional, conselhoSaude, conselhoAfetivo}) => {
-
-    // Definir userData em um estado local
-    const [userDetails, setUserDetails] = useState(userData);
-    
-    const [state, setState] = useState({ currentSelectedZodiacSign: zodiacSignsList[9].zodiacSignName, })
-    const updateState = (data) => setState((state) => ({ ...state, ...data }))
-    
-
-    useEffect(() => {
-        if (userDetails) {
-            getAstroData();
+    const fetchUserData = async () => {
+        try {
+            const userId = await AsyncStorage.getItem('userId');
+            if (userId) {
+                const response = await axios.get(`https://serverdados-8805a7170f22.herokuapp.com/data/get_astro_data/${userId}`, {
+                    headers: {
+                        'Authorization': 'Bearer RVj46uupo0TEO5QvWkfXYdfnpOs98xYfo8dbSwAdLKZSfb1A3b4S0OqSzUlQeQ5X4yBZbOGaSJzIilF2QkPs8ACqAQLJwHvxn1kvYwYcg0zlyCEByGXBbbeJ41uC2kCCEsSfmh4kYnG81F7VMGuBxpVmCS8uPA4njUSA4XC7ufIBRoZF7Ncf4raPc5H1qXgBFpOtxWJQkp9jnNENeUP86VLTIQuRckKP69bbyPrxFU2APzZDClPPEXWJcvjhJcqG'
+                    }
+                });
+                if (response.data) {
+                    setUserData(response.data);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            Alert.alert('Erro', 'Ocorreu um erro ao buscar os dados do usuário.');
         }
-    }, [userDetails]);
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchUserData();
+        }, [])
+    );
 
     const callWhatsApp = (phone) => {
         let url = `whatsapp://send?phone=${phone}`;
@@ -159,26 +134,7 @@ const HomeScreen = ({ navigation, userData, name, phone, astroData, chineseZodia
                 Alert.alert('Erro', 'Ocorreu um erro ao tentar abrir o WhatsApp.');
             });
     };
-    
-    
 
-    const {
-        currentSelectedZodiacSign,
-    } = state;
-
-    const renderButtons = () => {
-        return (
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity 
-                    style={[styles.button, styles.buttonMarginTop]} 
-                    onPress={handleEditInformation} 
-                >
-                    <Text style={styles.buttonText}>Retornar</Text>
-                </TouchableOpacity>
-            </View>
-        );
-    }
-    
     const handleEditInformation = () => {
         Alert.alert(
             "Retornar",
@@ -190,119 +146,115 @@ const HomeScreen = ({ navigation, userData, name, phone, astroData, chineseZodia
                     style: "cancel"
                 },
                 {
-                    text: "Confirmar", 
+                    text: "Confirmar",
                     onPress: async () => {
-                        try { 
+                        try {
                             navigation.navigate('Onboarding'); // Retorna para a tela anterior
                         } catch (error) {
-                            console.error(error);   
+                            console.error(error);
                         }
                     }
                 }
             ],
             { cancelable: false }
         );
-    }
+    };
+
+    const handleUpdateInformation = () => {
+        Alert.alert(
+            "Atualizar Dados",
+            "Deseja atualizar seus dados?",
+            [
+                {
+                    text: "Cancelar",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: "Confirmar",
+                    onPress: () => {
+                        // Implemente a lógica de atualização aqui
+                        console.log("Dados atualizados");
+                        Alert.alert('Sucesso', 'Seus dados foram atualizados com sucesso.');
+                    }
+                }
+            ],
+            { cancelable: false }
+        );
+    };
+
+    const handleDeleteInformation = () => {
+        Alert.alert(
+            "Apagar Registro",
+            "Tem certeza de que deseja apagar seu registro?",
+            [
+                {
+                    text: "Cancelar",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: "Confirmar",
+                    onPress: () => {
+                        // Implemente a lógica de apagar registro aqui
+                        console.log("Registro apagado");
+                        Alert.alert('Sucesso', 'Seu registro foi apagado com sucesso.');
+                    }
+                }
+            ],
+            { cancelable: false }
+        );
+    };
+
+    const renderButtons = () => (
+        <View style={styles.buttonContainer}>
+            <TouchableOpacity style={[styles.button, styles.buttonMarginTop]} onPress={handleEditInformation}>
+                <Text style={styles.buttonText}>Retornar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.button, styles.buttonMarginTop]} onPress={handleUpdateInformation}>
+                <Text style={styles.buttonText}>Atualizar Dados</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.button, styles.buttonMarginTop]} onPress={handleDeleteInformation}>
+                <Text style={styles.buttonText}>Apagar Registro</Text>
+            </TouchableOpacity>
+        </View>
+    );
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
             <StatusBar backgroundColor={Colors.secondaryColor} />
             <View style={{ flex: 1 }}>
-            
                 <FlatList
                     ListHeaderComponent={
                         <>
                             {header()}
-                            {banners()}
+                            {aboutPersonalizedHoroscopes()}
                             {horoscopesInfo()}
                             {zodiacSigns()}
-                            {topAstrologers()}
                             {renderButtons()}
                         </>
                     }
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: Sizes.fixPadding * 7.0, }}
+                    contentContainerStyle={{ paddingBottom: Sizes.fixPadding * 7.0 }}
                 />
             </View>
         </SafeAreaView>
-    )
-    
-    
-    function topAstrologers() {
-
-        const renderItem = ({ item }) => (
-            <View style={styles.topAstrologerWrapStyle}>
-                <Image
-                    source={item.astrologerImage}
-                    style={styles.astrologerImageStyle}
-                />
-                <View style={{
-                    width: width / 2.8,
-                    paddingTop: Sizes.fixPadding - 5.0,
-                    paddingBottom: Sizes.fixPadding,
-                }}>
-                    <View style={{ paddingHorizontal: Sizes.fixPadding - 5.0, }}>
-                        <Text numberOfLines={1} style={{ ...Fonts.blackColor14Medium }}>
-                            {item.astrologerName}
-                        </Text>
-                        <Text numberOfLines={1} style={{ ...Fonts.grayColor11Regular }}>
-                            {item.astrologerSpeciality}
-                        </Text>
-                        <Text>
-                            <Text style={{ ...Fonts.grayColor11Regular }}>
-                                Promoção: { }
-                            </Text>
-                            <Text style={{ ...Fonts.blackColor11SemiBold }}>
-                                {item.astrologerPromotion}
-                            </Text>
-                        </Text>
-                    </View>
-                    <View style={{ height: 2.0, backgroundColor: '#EEEEEE', marginVertical: Sizes.fixPadding - 5.0, }} />
-                    <View style={{ ...styles.viewProfileAndMessageTextWrapStyle, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text
-                            onPress={() => navigation.push(item.astrologerScreen, { item: item })}
-                            style={{ ...Fonts.primaryColor10Bold }}
-                        >
-                            Ver Perfil
-                        </Text>
-                    </View>
-                    </View>
-
-            </View>
-        )
-        return (
-            <View>
-                <Text style={{ marginTop:20,marginHorizontal: Sizes.fixPadding * 2.0, ...Fonts.blackColor16Bold }}>
-                    Nossos Astrólogos
-                </Text>
-                <FlatList
-                    data={topAstrologerList}
-                    keyExtractor={(item) => `${item.id}`}
-                    renderItem={renderItem}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{
-                        paddingLeft: Sizes.fixPadding * 2.0,
-                        paddingVertical: Sizes.fixPadding * 2.0
-                    }}
-                />
-            </View>
-        )
-    }
+    );
 
     function horoscopesInfo() {
-        // Considerando Sizes.fixPadding para o espaçamento_x
         const space_x = Sizes.fixPadding;
-    
+
         return (
             <View style={{ marginHorizontal: space_x }}>
-                <Text style={{marginTop:5,marginHorizontal: Sizes.fixPadding * 1.0, marginBottom: space_x, ...Fonts.blackColor16Bold }}>
+                <Text style={{ marginTop: 5, marginHorizontal: Sizes.fixPadding * 1.0, marginBottom: space_x, ...Fonts.blackColor16Bold }}>
                     Horóscopos
                 </Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <TouchableOpacity
                         activeOpacity={0.9}
-                        onPress={() => navigation.push('AstroProfile', { astroData: astroData })}
+                        onPress={() => navigation.push('AstroProfile', { astroData: userData?.astro_data })}
                         style={{ flex: 1, marginHorizontal: space_x / 2 }}
                     >
                         <ImageBackground
@@ -319,10 +271,10 @@ const HomeScreen = ({ navigation, userData, name, phone, astroData, chineseZodia
                             </Text>
                         </ImageBackground>
                     </TouchableOpacity>
-    
+
                     <TouchableOpacity
                         activeOpacity={0.9}
-                        onPress={() => navigation.push('chineseDetailScreen', { chineseZodiac: chineseZodiac })}
+                        onPress={() => navigation.push('chineseDetailScreen', { chineseZodiac: userData?.chinese_zodiac })}
                         style={{ flex: 1, marginHorizontal: space_x / 2 }}
                     >
                         <ImageBackground
@@ -339,10 +291,10 @@ const HomeScreen = ({ navigation, userData, name, phone, astroData, chineseZodia
                             </Text>
                         </ImageBackground>
                     </TouchableOpacity>
-    
+
                     <TouchableOpacity
                         activeOpacity={0.9}
-                        onPress={() => navigation.push('weekAdvice', { conselhoAfetivo: conselhoAfetivo,conselhoProfissional: conselhoProfissional, conselhoSaude: conselhoSaude })}
+                        onPress={() => navigation.push('weekAdvice', { conselhoAfetivo: userData?.advice_love, conselhoProfissional: userData?.advice_professional, conselhoSaude: userData?.advice_health })}
                         style={{ flex: 1, marginHorizontal: space_x / 2 }}
                     >
                         <ImageBackground
@@ -361,95 +313,47 @@ const HomeScreen = ({ navigation, userData, name, phone, astroData, chineseZodia
                     </TouchableOpacity>
                 </View>
             </View>
-        )
+        );
     }
-    
 
-    function banners() {
-        
-        const renderItem = ({ item }) => (
-            <View style={{marginTop:30, marginRight: Sizes.fixPadding * 2.0, }}>
-                <ImageBackground
-                    source={require('../../assets/images/container_bg.png')}
-                    style={styles.bannerImageStyle}
-                    borderRadius={Sizes.fixPadding - 5.0}
-                    resizeMode="stretch"
-                >
-                    <View style={{ flex: 0.7, }}>
-                        <Text numberOfLines={1} style={{ ...Fonts.whiteColor14ExtraBold }}>
-                            {item.title}
-                        </Text>
-                        <Text numberOfLines={3} style={{ marginTop: Sizes.fixPadding - 5.0, marginBottom: Sizes.fixPadding + 10.0, ...Fonts.whiteColor10Light }}>
-                            {item.description}
-                        </Text>
-                        <View style={styles.bannerCallInfoWrapStyle}>
-                            <View style={styles.phoneIconWrapStyle}>
-                                <MaterialIcons
-                                    name="phone"
-                                    color={Colors.whiteColor}
-                                    size={12}
-                                />
-                            </View>
-                            <TouchableOpacity onPress={() => callWhatsApp('+5511942605714')}>
-                                <Text style={{ marginLeft: Sizes.fixPadding - 5.0, ...Fonts.primaryColor10Black }}>
-                                    Ligar para o astrólogo
-                                </Text>
-                             </TouchableOpacity>
-                        </View>
-                    </View>
-                    <MaterialCommunityIcons
-                        name="lock"
-                        color={Colors.whiteColor}
-                        size={13}
-                        style={{ position: 'absolute', right: 10.0, top: 5.0, }}
-                    />
-                </ImageBackground>
-            </View>
-        )
+    function aboutPersonalizedHoroscopes() {
+        const dailyAdvice = userData?.daily_advice || 'Nenhum conselho disponível.';
         return (
-            <View>
-                <FlatList
-                    data={bannersList}
-                    keyExtractor={(item) => `${item.id}`}
-                    renderItem={renderItem}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{
-                        paddingLeft: Sizes.fixPadding * 2.0,
-                        paddingBottom: Sizes.fixPadding * 2.0,
-                    }}
-                />
+            <View style={{ marginTop: 50, marginHorizontal: Sizes.fixPadding * 2.0 }}>
+                <Text style={{ marginBottom: Sizes.fixPadding, ...Fonts.blackColor16Bold }}>
+                    Conselho diário
+                </Text>
+                <Text style={{ marginBottom: Sizes.fixPadding, ...Fonts.grayColor12Regular }}>
+                    {dailyAdvice}
+                </Text>
             </View>
-        )
+        );
     }
 
     function zodiacSigns() {
-
         const renderItem = ({ item }) => (
             <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={() => {
-                updateState({ currentSelectedZodiacSign: item.zodiacSignName });
-                const screenName = zodiacScreenMapping[item.zodiacSignName];
-                if (screenName) {
-                    navigation.push(screenName, { item: item });
-                } else {
-                    console.warn(`No screen found for zodiac sign: ${item.zodiacSignName}`);
-                }
-            }}
-            style={styles.zodiacSignsWrapStyle}
-        >
+                activeOpacity={0.9}
+                onPress={() => {
+                    updateState({ currentSelectedZodiacSign: item.zodiacSignName });
+                    const screenName = zodiacScreenMapping[item.zodiacSignName];
+                    if (screenName) {
+                        navigation.push(screenName, { item: item });
+                    } else {
+                        console.warn(`No screen found for zodiac sign: ${item.zodiacSignName}`);
+                    }
+                }}
+                style={styles.zodiacSignsWrapStyle}
+            >
                 {
-                    currentSelectedZodiacSign != item.zodiacSignName
-                        ?
-                        < View style={styles.zodiacSignImageWrapStyle}>
+                    currentSelectedZodiacSign !== item.zodiacSignName
+                        ? <View style={styles.zodiacSignImageWrapStyle}>
                             <Image
                                 source={item.zodiacSignImage}
                                 style={{ width: 30.0, height: 30.0, resizeMode: 'contain' }}
                             />
                         </View>
-                        :
-                        <LinearGradient
+                        : <LinearGradient
                             colors={[
                                 Colors.primaryColor,
                                 Colors.secondaryColor,
@@ -466,18 +370,15 @@ const HomeScreen = ({ navigation, userData, name, phone, astroData, chineseZodia
                     {item.zodiacSignName}
                 </Text>
             </TouchableOpacity>
-        )
+        );
         return (
-            
             <View style={{
                 paddingHorizontal: Sizes.fixPadding + 6.5,
                 paddingVertical: Sizes.fixPadding * 2.0,
             }}>
-
-                <Text style={{marginTop: 5, marginHorizontal: Sizes.fixPadding * 0.5, marginBottom: Sizes.fixPadding, ...Fonts.blackColor16Bold }}>
+                <Text style={{ marginTop: 5, marginHorizontal: Sizes.fixPadding * 0.5, marginBottom: Sizes.fixPadding, ...Fonts.blackColor16Bold }}>
                     Signos do zodíaco
                 </Text>
-                
                 <FlatList
                     data={zodiacSignsList}
                     keyExtractor={(item) => `${item.id}`}
@@ -487,7 +388,7 @@ const HomeScreen = ({ navigation, userData, name, phone, astroData, chineseZodia
                     scrollEnabled={false}
                 />
             </View>
-        )
+        );
     }
 
     function getGreeting() {
@@ -502,8 +403,7 @@ const HomeScreen = ({ navigation, userData, name, phone, astroData, chineseZodia
     }
 
     function header() {
-        const greeting = getGreeting(); // Obter a saudação apropriada baseada na hora atual
-    
+        const greeting = getGreeting();
         return (
             <LinearGradient
                 style={styles.headerWrapStyle}
@@ -511,14 +411,13 @@ const HomeScreen = ({ navigation, userData, name, phone, astroData, chineseZodia
             >
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={{ textAlign: 'center', flex: 1, ...Fonts.whiteColor14SemiBold }}>
-                        {`${greeting} ${name}, fique á vontade para se conhecer`} 
+                        {`${greeting} ${name}, fique à vontade para se conhecer`}
                     </Text>
                 </View>
             </LinearGradient>
         );
     }
-
-}
+};
 
 const styles = StyleSheet.create({
     headerWrapStyle: {
@@ -542,7 +441,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
-        elevation: 3.0,
         paddingVertical: Sizes.fixPadding - 2.0,
     },
     phoneIconWrapStyle: {
@@ -568,51 +466,8 @@ const styles = StyleSheet.create({
         paddingTop: Sizes.fixPadding + 5.0,
         paddingHorizontal: Sizes.fixPadding,
     },
-    horoscopesWrapStyle: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        flex: 1,
-        borderRadius: Sizes.fixPadding - 5.0,
-    },
-    othersFeaturesInfoWrapStyle: {
-        borderRadius: Sizes.fixPadding - 5.0,
-        backgroundColor: Colors.whiteColor,
-        elevation: 3.0,
-        marginRight: Sizes.fixPadding * 2.0,
-    },
-    otherFeaturesImageStyle: {
-        height: height / 8.5,
-        borderTopLeftRadius: Sizes.fixPadding - 5.0,
-        borderTopRightRadius: Sizes.fixPadding - 5.0,
-        width: width / 3.0,
-    },
-    otherFeaturesDetailWrapStyle: {
-        width: width / 3.0,
-        paddingTop: Sizes.fixPadding - 5.0,
-        paddingBottom: Sizes.fixPadding + 5.0,
-        paddingHorizontal: Sizes.fixPadding - 5.0,
-    },
-    astrologerImageStyle: {
-        height: height / 8.5,
-        borderTopLeftRadius: Sizes.fixPadding - 5.0,
-        borderTopRightRadius: Sizes.fixPadding - 5.0,
-        width: width / 2.8,
-    },
-    viewProfileAndMessageTextWrapStyle: {
-        paddingHorizontal: Sizes.fixPadding - 5.0,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-    },
-    topAstrologerWrapStyle: {
-        borderRadius: Sizes.fixPadding - 5.0,
-        backgroundColor: Colors.whiteColor,
-        elevation: 3.0,
-        marginRight: Sizes.fixPadding * 2.0,
-    },
-
     buttonContainer: {
-        marginTop:30,
+        marginTop: 30,
         flexDirection: 'column',
         paddingHorizontal: 20,
         paddingVertical: 10,
@@ -633,6 +488,6 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold',
     },
-})
+});
 
 export default HomeScreen;

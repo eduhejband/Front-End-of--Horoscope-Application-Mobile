@@ -4,8 +4,8 @@ import * as Animatable from 'react-native-animatable';
 import { TextInputMask } from 'react-native-masked-text';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getAstroData } from '../getAstroData/getAstroData';
-import NetInfo from '@react-native-community/netinfo'; // Importar NetInfo
+import { registerAstroData } from '../getAstroData/getAstroData'; // Importar a função de registro atualizada
+import NetInfo from '@react-native-community/netinfo';
 import 'react-native-get-random-values';
 
 export default function SigninScreen({ navigation }) {
@@ -213,7 +213,7 @@ export default function SigninScreen({ navigation }) {
     const userId = Math.floor(Math.random() * 1000000);
 
     const userData = {
-      userId: userId,
+      id: userId, // Atualize a chave para 'id'
       name: name,
       data_nascimento: formattedBirthDate,
       hora_nascimento: formattedBirthTime,
@@ -227,28 +227,19 @@ export default function SigninScreen({ navigation }) {
       // Armazenar o novo ID do usuário no AsyncStorage
       await AsyncStorage.setItem('userId', userId.toString());
 
-      const astroData = await Promise.race([
-        getAstroData(userData), // Passar userId para getAstroData
+      const registerResponse = await Promise.race([
+        registerAstroData(userData),
         timeout(30000)
       ]);
 
-      console.log("Dados recebidos da API getAstroData:", astroData.chineseZodiac);
+      console.log("Resposta da API de registro:", registerResponse);
 
-      if (astroData && astroData.astroData && astroData.dailyAdvice && astroData.conselhosData && astroData.chineseZodiac) {
-        console.log("Navegando para zodiacHoroscopeFirstEscorpiaoScreen com dados carregados.");
-        navigation.navigate('zodiacHoroscopeFirstEscorpiaoScreen', {
-          astroData: astroData.astroData,
-          dailyAdvice: astroData.dailyAdvice,
-          conselhoProfissional: astroData.conselhosData.profissional,
-          conselhoSaude: astroData.conselhosData.saude,
-          conselhoAfetivo: astroData.conselhosData.afetivo,
-          userData: { ...userData, userId },
-          name: name,
-          chineseZodiac: astroData.chineseZodiac
-        });
+      if (registerResponse) {
+        console.log("Navegando para BottomTabBar.");
+        navigation.navigate('BottomTabBar');
       } else {
-        console.log("Erro: Dados astrológicos incompletos ou inválidos.");
-        Alert.alert('Erro', 'Não foi possível obter os dados astrológicos completos. Por favor, tente novamente.');
+        console.log("Erro: Falha no registro.");
+        Alert.alert('Erro', 'Não foi possível completar o registro. Por favor, tente novamente.');
         setIsLoading(false);
         return;
       }
@@ -257,8 +248,8 @@ export default function SigninScreen({ navigation }) {
       if (error.message === "Tempo limite excedido") {
         Alert.alert('Erro', 'Ocorreu algum erro de conexão.');
       } else {
-        console.error("Erro ao buscar dados astrológicos:", error);
-        Alert.alert('Erro', 'Ocorreu um erro ao buscar os dados. Por favor, tente novamente.');
+        console.error("Erro ao registrar dados:", error);
+        Alert.alert('Erro', 'Ocorreu um erro ao registrar os dados. Por favor, tente novamente.');
       }
     } finally {
       setIsLoading(false);
