@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { SafeAreaView, View, StatusBar, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, FlatList, Alert, Image } from "react-native";
+import { SafeAreaView, View, StatusBar, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, FlatList, Alert, ActivityIndicator, Image } from "react-native";
 import { Colors, Fonts, Sizes } from "../../constants/styles";
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -41,6 +41,7 @@ const zodiacScreenMapping = {
 const HomeScreen = ({ navigation, name }) => {
     const [userData, setUserData] = useState(null);
     const [currentSelectedZodiacSign, setCurrentSelectedZodiacSign] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const fetchUserData = async () => {
         try {
@@ -58,6 +59,8 @@ const HomeScreen = ({ navigation, name }) => {
         } catch (error) {
             console.error('Error fetching user data:', error);
             Alert.alert('Erro', 'Ocorreu um erro ao buscar os dados do usuário.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -116,6 +119,15 @@ const HomeScreen = ({ navigation, name }) => {
             </TouchableOpacity>
         </View>
     );
+
+    if (isLoading) {
+        return (
+            <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color={Colors.primaryColor} />
+                <Text style={{ marginTop: 10, ...Fonts.grayColor12Regular }}>Carregando...</Text>
+            </SafeAreaView>
+        );
+    }
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.whiteColor }}>

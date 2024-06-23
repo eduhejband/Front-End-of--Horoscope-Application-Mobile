@@ -1,11 +1,29 @@
-import React, { useCallback, useState } from "react";
-import { View, Text, BackHandler, SafeAreaView, StatusBar, Animated, StyleSheet } from "react-native";
+import React, { useCallback, useState, useEffect } from "react";
+import { View, Text, BackHandler, SafeAreaView, StatusBar, Animated, StyleSheet, Alert } from "react-native";
 import { Colors, Fonts, Sizes } from "../constants/styles";
 import HomeScreen from "../screens/home/homeScreen";
 import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BottomTabBarScreen = ({ navigation, route }) => {
-    const { name } = route.params; // Recebe o nome dos parâmetros de navegação
+    const [name, setName] = useState(route.params?.name || ''); // Inicialmente tenta obter o nome dos parâmetros
+
+    useEffect(() => {
+        const fetchName = async () => {
+            if (!name) {
+                try {
+                    const storedName = await AsyncStorage.getItem('name');
+                    if (storedName) {
+                        setName(storedName);
+                    }
+                } catch (error) {
+                    console.error('Erro ao recuperar o nome do AsyncStorage:', error);
+                    Alert.alert('Erro', 'Não foi possível recuperar o nome do usuário.');
+                }
+            }
+        };
+        fetchName();
+    }, [name]);
 
     const backAction = () => {
         backClickCount === 1 ? BackHandler.exitApp() : _spring();
@@ -38,7 +56,6 @@ const BottomTabBarScreen = ({ navigation, route }) => {
         <SafeAreaView style={{ flex: 1 }}>
             <StatusBar translucent={false} backgroundColor={Colors.primaryColor} />
             <View style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
-                {/* Passa o nome para a HomeScreen */}
                 <HomeScreen navigation={navigation} name={name} />
             </View>
             {

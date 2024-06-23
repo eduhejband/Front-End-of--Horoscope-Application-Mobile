@@ -31,38 +31,51 @@ const OnboardingScreen = ({ navigation }) => {
                 Alert.alert('Sem Conexão', 'Por favor, verifique sua conexão com a internet e tente novamente.');
                 return;
             }
-
+    
             setIsLoading(true);
+    
             const userId = await AsyncStorage.getItem('userId');
-            if (userId) {
-                const response = await axios.post(
-                    `https://serverdados-8805a7170f22.herokuapp.com/last_login/last_astro_data/${userId}`,
-                    null,
-                    {
-                        headers: {
-                            'Authorization': 'Bearer sOMx3opuNm2e26BqKNNiVgsUmWISjVWkyQJGkKmGpvZNFibmoN2uxe3FCCfGSt7vbK9JFNLvm607zyjN7RHTV64Z2pK7sDgbjTegM8I10poSRpzNkApyCu0XtHIQIMrqNN8Us8c40CI3sX9Eo0RKylOV2Lt80dJckgQGec47YcIdTSivy3nU0R7KW5PbMi5OsuwEu0bZRAK818xcOepft4c4v2dIxWRNPEY7TtliPObSiVa7Zs266658b33d6568'
-                        }
+            const name = await AsyncStorage.getItem('name');
+    
+            console.log("Recuperado userId do AsyncStorage:", userId);
+            console.log("Recuperado name do AsyncStorage:", name);
+    
+            if (!userId || !name) {
+                console.log("UserId ou name não encontrados no AsyncStorage.");
+                navigation.navigate('Signin');
+                return;
+            }
+    
+            const response = await axios.post(
+                `https://serverdados-8805a7170f22.herokuapp.com/last_login/last_astro_data/${userId}`,
+                null,
+                {
+                    headers: {
+                        'Authorization': 'Bearer sOMx3opuNm2e26BqKNNiVgsUmWISjVWkyQJGkKmGpvZNFibmoN2uxe3FCCfGSt7vbK9JFNLvm607zyjN7RHTV64Z2pK7sDgbjTegM8I10poSRpzNkApyCu0XtHIQIMrqNN8Us8c40CI3sX9Eo0RKylOV2Lt80dJckgQGec47YcIdTSivy3nU0R7KW5PbMi5OsuwEu0bZRAK818xcOepft4c4v2dIxWRNPEY7TtliPObSiVa7Zs266658b33d6568'
                     }
-                );
-
-                if (response.status === 200 && response.data.success) {
-                    console.log('ID encontrado no banco e último login atualizado.');
-                    navigation.navigate('UserDashboard'); // Nome da tela para onde o usuário deve ser redirecionado se estiver logado
-                } else {
-                    console.log('ID não encontrado no banco.');
-                    navigation.navigate('Signin');
                 }
+            );
+    
+            console.log("Resposta da API para verificação do usuário:", response.data);
+    
+            // Verifica o status da resposta e a mensagem retornada
+            if (response.status === 200 && response.data.message === "Ultimo acesso atualizado com sucesso") {
+                console.log('ID encontrado no banco e último login atualizado.');
+                navigation.navigate('BottomTabBar', { name });
             } else {
+                console.log('ID não encontrado no banco.');
                 navigation.navigate('Signin');
             }
         } catch (error) {
-            console.log('Erro ao tentar fazer login: ', error);
+            console.error('Erro ao tentar fazer login: ', error);
+            Alert.alert('Erro', `Erro ao tentar fazer login: ${error.message}`);
             navigation.navigate('Signin');
         } finally {
             setIsLoading(false);
         }
     };
-
+    
+    
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar hidden />

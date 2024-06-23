@@ -175,33 +175,33 @@ export default function SigninScreen({ navigation }) {
     // Verificar conexão com a internet
     const state = await NetInfo.fetch();
     if (!state.isConnected) {
-      Alert.alert('Sem Conexão', 'Por favor, verifique sua conexão com a internet e tente novamente.');
-      setIsLoading(false);
-      return;
+        Alert.alert('Sem Conexão', 'Por favor, verifique sua conexão com a internet e tente novamente.');
+        setIsLoading(false);
+        return;
     }
 
     if (!name || birthplaceValidation === false || !birthplace || !birthDate || birthDateValidation === false) {
-      Alert.alert('Campos obrigatórios', 'Por favor, preencha os campos corretamente.');
-      setIsLoading(false);
-      return;
+        Alert.alert('Campos obrigatórios', 'Por favor, preencha os campos corretamente.');
+        setIsLoading(false);
+        return;
     }
 
     if (isCheckingBirthplace || isCheckingBirthDate || isCheckingBirthTime) {
-      Alert.alert('Aguarde', 'Por favor, aguarde as verificações.');
-      setIsLoading(false);
-      return;
+        Alert.alert('Aguarde', 'Por favor, aguarde as verificações.');
+        setIsLoading(false);
+        return;
     }
 
     if (birthplaceValidation === false) {
-      Alert.alert('Erro', 'Por favor, digite um local de nascimento válido.');
-      setIsLoading(false);
-      return;
+        Alert.alert('Erro', 'Por favor, digite um local de nascimento válido.');
+        setIsLoading(false);
+        return;
     }
 
     if (birthTimeValidation === false) {
-      Alert.alert('Erro', 'Por favor, insira um horário válido ou deixe o campo vazio.');
-      setIsLoading(false);
-      return;
+        Alert.alert('Erro', 'Por favor, insira um horário válido ou deixe o campo vazio.');
+        setIsLoading(false);
+        return;
     }
 
     const birthDateParts = birthDate.split('/');
@@ -209,49 +209,49 @@ export default function SigninScreen({ navigation }) {
     const formattedBirthplace = birthplace.split(',').map(item => item.trim()).join('.');
     const formattedBirthTime = birthTime || '12:00';
 
-    // Gerar um ID numérico
     const userId = Math.floor(Math.random() * 1000000);
 
     const userData = {
-      id: userId,
-      name: name,
-      data_nascimento: formattedBirthDate,
-      hora_nascimento: formattedBirthTime,
-      cidade_nascimento: formattedBirthplace
+        id: userId,
+        name: name,
+        data_nascimento: formattedBirthDate,
+        hora_nascimento: formattedBirthTime,
+        cidade_nascimento: formattedBirthplace
     };
 
     try {
-      await AsyncStorage.removeItem('userId');
-      await AsyncStorage.setItem('userId', userId.toString());
+        await AsyncStorage.removeItem('userId');
+        await AsyncStorage.setItem('userId', userId.toString());
+        await AsyncStorage.setItem('name', name); // Salvando o name no AsyncStorage
 
-      const registerResponse = await Promise.race([
-        registerAstroData(userData),
-        timeout(30000)
-      ]);
+        const registerResponse = await Promise.race([
+            registerAstroData(userData),
+            timeout(30000)
+        ]);
 
-      console.log("Resposta da API de registro:", registerResponse);
+        console.log("Resposta da API de registro:", registerResponse);
 
-      if (registerResponse) {
-        console.log("Navegando para BottomTabBar.");
-        navigation.navigate('BottomTabBar', { name });
-      } else {
-        console.log("Erro: Falha no registro.");
-        Alert.alert('Erro', 'Não foi possível completar o registro. Por favor, tente novamente.');
-        setIsLoading(false);
-        return;
-      }
+        if (registerResponse) {
+            console.log("Navegando para BottomTabBar.");
+            navigation.navigate('BottomTabBar', { name });
+        } else {
+            console.log("Erro: Falha no registro.");
+            Alert.alert('Erro', 'Não foi possível completar o registro. Por favor, tente novamente.');
+            setIsLoading(false);
+            return;
+        }
     } catch (error) {
-      setIsLoading(false);
-      if (error.message === "Tempo limite excedido") {
-        Alert.alert('Erro', 'Ocorreu algum erro de conexão.');
-      } else {
-        console.error("Erro ao registrar dados:", error);
-        Alert.alert('Erro', 'Ocorreu um erro ao registrar os dados. Por favor, tente novamente.');
-      }
+        setIsLoading(false);
+        if (error.message === "Tempo limite excedido") {
+            Alert.alert('Erro', 'Ocorreu algum erro de conexão.');
+        } else {
+            console.error("Erro ao registrar dados:", error);
+            Alert.alert('Erro', 'Ocorreu um erro ao registrar os dados. Por favor, tente novamente.');
+        }
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  }
+}
 
   function timeout(ms) {
     return new Promise((resolve, reject) => {
