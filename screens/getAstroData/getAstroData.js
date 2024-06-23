@@ -1,9 +1,26 @@
 import axios from 'axios';
 import 'react-native-get-random-values';
 
+// Função para verificar se o ID do usuário já existe
+export const checkUserIdExistence = async (userId) => {
+    try {
+        const response = await axios.get(`https://serverdados-8805a7170f22.herokuapp.com/data/get_astro_data/${userId}`, {
+            headers: {
+                'Authorization': 'Bearer RVj46uupo0TEO5QvWkfXYdfnpOs98xYfo8dbSwAdLKZSfb1A3b4S0OqSzUlQeQ5X4yBZbOGaSJzIilF2QkPs8ACqAQLJwHvxn1kvYwYcg0zlyCEByGXBbbeJ41uC2kCCEsSfmh4kYnG81F7VMGuBxpVmCS8uPA4njUSA4XC7ufIBRoZF7Ncf4raPc5H1qXgBFpOtxWJQkp9jnNENeUP86VLTIQuRckKP69bbyPrxFU2APzZDClPPEXWJcvjhJcqG'
+            }
+        });
+
+        // Verifica se o status é 200 (OK)
+        return response.status === 200;
+    } catch (error) {
+        console.error('Erro ao verificar existência do ID do usuário:', error);
+        return false; // Em caso de erro, assume que o ID não existe
+    }
+};
+
+// Função para registrar os dados do usuário
 export const registerAstroData = async (userData) => {
     try {
-        // Chamada para a API de cadastro
         const response = await axios.post('https://serverdados-8805a7170f22.herokuapp.com/register/register_astro_data', {
             id: userData?.id,
             name: userData?.name,
@@ -21,8 +38,8 @@ export const registerAstroData = async (userData) => {
             return response.data;
         }
     } catch (error) {
-        console.error('Error in registerAstroData:', error);
-        throw error;
+        console.error('Erro no registerAstroData:', error);
+        throw error; // Propaga o erro para ser tratado externamente se necessário
     }
 
     return null; // Retorna null se não houver dados ou em caso de erro
