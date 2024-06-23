@@ -27,7 +27,7 @@ import weekAdvice from "./screens/weekAdvice/weekAdvice.js"
 import SplashScreen from "./screens/splashScreen";
 import OnboardingScreen from "./screens/onboarding/onboardingScreen";
 import SigninScreen from "./screens/auth/signinScreen";
-
+import UpdateDataScreen from "./screens/auth/updateScreen.js";
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 
 LogBox.ignoreAllLogs();
@@ -47,6 +47,7 @@ const App = () => {
         <Stack.Screen name="Splash" component={SplashScreen} options={{ ...TransitionPresets.DefaultTransition }} />
         <Stack.Screen name="Onboarding" component={OnboardingScreen} />
         <Stack.Screen name="Signin" component={SigninScreen} options={{ ...TransitionPresets.DefaultTransition }} />
+        <Stack.Screen name="Update" component={UpdateDataScreen} options={{ ...TransitionPresets.DefaultTransition }} />
         <Stack.Screen name="BottomTabBar" component={BottomTabBarScreen} options={{ ...TransitionPresets.DefaultTransition }} />
         <Stack.Screen name="zodiacHoroscopeDetailAriesScreen" component={zodiacHoroscopeDetailAriesScreen} />
         <Stack.Screen name="zodiacHoroscopeDetailTouroScreen" component={zodiacHoroscopeDetailTouroScreen} />
