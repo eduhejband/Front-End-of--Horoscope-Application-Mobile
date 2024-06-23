@@ -89,7 +89,7 @@ const HomeScreen = ({ navigation, name }) => {
             "Deseja atualizar seus dados?",
             [
                 { text: "Cancelar", onPress: () => console.log("Cancel Pressed"), style: "cancel" },
-                { text: "Confirmar", onPress: () => Alert.alert('Sucesso', 'Seus dados foram atualizados com sucesso.') }
+                { text: "Confirmar", onPress: () => navigation.navigate('Update') }
             ],
             { cancelable: false }
         );
