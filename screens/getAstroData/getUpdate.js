@@ -3,8 +3,8 @@ import 'react-native-get-random-values';
 
 export const updateAstroData = async (userData) => {
     try {
-        // Chamada para a API de atualização
-        const response = await axios.put(`https://serverdados-8805a7170f22.herokuapp.com/update/update_astro_data/${userData.id}`, {
+        const response = await axios.put('https://serverdados-8805a7170f22.herokuapp.com/update/update_astro_data', {
+            id: userData.id,
             name: userData.name,
             data_nascimento: userData.data_nascimento,
             hora_nascimento: userData.hora_nascimento,
@@ -17,7 +17,13 @@ export const updateAstroData = async (userData) => {
 
         return response.data;
     } catch (error) {
-        console.error('Error in updateAstroData:', error);
+        if (error.response) {
+            console.error('Erro na atualização:', error.response.status, error.response.data);
+        } else if (error.request) {
+            console.error('Erro na requisição:', error.request);
+        } else {
+            console.error('Erro na configuração:', error.message);
+        }
         throw error;
     }
 };

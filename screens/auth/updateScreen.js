@@ -22,7 +22,6 @@ export default function UpdateDataScreen({ navigation }) {
     const [birthTimeValidation, setBirthTimeValidation] = useState(null);
     const [isCheckingBirthTime, setIsCheckingBirthTime] = useState(false);
 
-    // Funções de validação (as mesmas do SigninScreen)
     const isValidDate = (d) => d instanceof Date && !isNaN(d);
     const isFutureDate = (date) => date > new Date();
     const isValidDayForMonth = (day, month, year) => {
@@ -330,9 +329,11 @@ const styles = StyleSheet.create({
         paddingEnd: '5%',
         paddingTop: '5%',
     },
+
     scrollContainer: {
         flex: 1
     },
+
     scrollContentContainer: {
         flexGrow: 1
     },
