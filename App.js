@@ -16,11 +16,8 @@ import zodiacHoroscopeDetailSagitarioScreen from "./screens/zodiacDailyHoroscope
 import zodiacHoroscopeDetailCapricornioScreen from "./screens/zodiacDailyHoroscopeDetail/zodiacHoroscopeDetailCapricornioScreen";
 import zodiacHoroscopeDetailAquarioScreen from "./screens/zodiacDailyHoroscopeDetail/zodiacHoroscopeDetailAquarioScreen";
 import zodiacHoroscopeDetailPeixesScreen from "./screens/zodiacDailyHoroscopeDetail/zodiacHoroscopeDetailPeixesScreen";
-import AstrologerDetailScreen1 from "./screens/astrologerDetail/astrologerDetailScreen1";
-import AstrologerDetailScreen2 from "./screens/astrologerDetail/astrologerDetailScreen2";
-import AstrologerDetailScreen3 from "./screens/astrologerDetail/astrologerDetailScreen3";
+
 import chineseDetailScreen from "./screens/chineseSign/chineseSign.js"
-import zodiacHoroscopeFirstEscorpiaoScreen from "./screens/zodiacFirstScreen/zodiacHoroscopeFirstEscorpiaoScreen.js";
 
 import AstroProfile from "./screens/astral_map/astral_map.js"
 import weekAdvice from "./screens/weekAdvice/weekAdvice.js"
@@ -63,11 +60,6 @@ const App = () => {
         <Stack.Screen name="zodiacHoroscopeDetailPeixesScreen" component={zodiacHoroscopeDetailPeixesScreen} />
 
 
-        <Stack.Screen name="zodiacHoroscopeFirstEscorpiaoScreen" component={zodiacHoroscopeFirstEscorpiaoScreen} />
-      
-        <Stack.Screen name="AstrologerDetail1" component={AstrologerDetailScreen1} />
-        <Stack.Screen name="AstrologerDetail2" component={AstrologerDetailScreen2} />
-        <Stack.Screen name="AstrologerDetail3" component={AstrologerDetailScreen3} />
         <Stack.Screen name="AstroProfile" component={AstroProfile} />
         <Stack.Screen name="chineseDetailScreen" component={chineseDetailScreen} />
         <Stack.Screen name="weekAdvice" component={weekAdvice} />
