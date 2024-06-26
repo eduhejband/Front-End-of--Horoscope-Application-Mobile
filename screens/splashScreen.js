@@ -30,7 +30,7 @@ const SplashScreen = ({ navigation }) => {
                 style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
             >
                 <Image
-                    source={require('../assets/images/logo1.png')}
+                    source={require('../assets/images/bg3.png')}
                     style={{ width: '100%', resizeMode: 'contain', height: 260 }}
                 />
             </ImageBackground>
