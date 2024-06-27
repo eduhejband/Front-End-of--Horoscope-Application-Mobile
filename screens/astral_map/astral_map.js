@@ -1,89 +1,135 @@
 import React, { useState } from "react";
-import { Modal,SafeAreaView, View, Dimensions, StatusBar, FlatList, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
-import { Colors, Fonts, Sizes, } from "../../constants/styles";
+import { Modal, SafeAreaView, View, Dimensions, StatusBar, FlatList, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
+import { Colors, Fonts, Sizes } from "../../constants/styles";
 import { MaterialIcons } from '@expo/vector-icons';
 import { ImageBackground } from 'react-native';
 const { width } = Dimensions.get('window');
 
-
 const AstralMap = ({ navigation, route }) => {
     const { astroData } = route.params;
+
+    const capitalizeSign = (sign) => {
+        const signs = {
+            aries: "Áries",
+            touro: "Touro",
+            gemeos: "Gêmeos",
+            cancer: "Câncer",
+            leao: "Leão",
+            virgem: "Virgem",
+            libra: "Libra",
+            escorpiao: "Escorpião",
+            sagitario: "Sagitário",
+            capricornio: "Capricórnio",
+            aquario: "Aquário",
+            peixes: "Peixes"
+        };
+        return signs[sign.toLowerCase()] || sign;
+    };
+
     const signsList = [
         {
             id: '1',
             signImage: require('../../assets/planets/sol.png'),
-            signName: 'Sol:' ,
-            signDetail: astroData ? astroData.Sun : 'Detalhes não disponíveis',
+            signName: 'Sol:',
+            signDetail: astroData ? capitalizeSign(astroData.Sun) : 'Detalhes não disponíveis',
             signDescription: 'Representa a posição do Sol no momento do seu nascimento. É o aspecto mais conhecido da astrologia e está frequentemente associado à consciência central, ego e identidade pessoal. O signo solar é comumente o que as pessoas se referem quando falam sobre "seu signo".'
         },
         {
             id: '2',
             signImage: require('../../assets/planets/lua.png'),
             signName: 'Lua:',
-            signDetail: astroData ? astroData.Moon : 'Detalhes não disponíveis',
-            signDescription: ' Refere-se à posição da Lua no momento do nascimento. O signo lunar está relacionado às emoções, instintos, memória e aspectos subconscientes da personalidade. Ele é considerado importante para entender a vida emocional interna de uma pessoa.'
+            signDetail: astroData ? capitalizeSign(astroData.Moon) : 'Detalhes não disponíveis',
+            signDescription: 'Refere-se à posição da Lua no momento do nascimento. O signo lunar está relacionado às emoções, instintos, memória e aspectos subconscientes da personalidade. Ele é considerado importante para entender a vida emocional interna de uma pessoa.'
         },
         {
             id: '3',
-            signImage: require('../../assets/planets/jupiter.png'),
-            signName: 'Júpiter:',
-            signDetail: astroData ? astroData.Jupiter : 'Detalhes não disponíveis',
-            signDescription: 'Júpiter leva cerca de 12 anos para orbitar o Sol, passando aproximadamente um ano em cada signo do zodíaco. O signo em que Júpiter está posicionado no seu nascimento está associado a como você expressa otimismo, crescimento, expansão e moralidade.'
+            signImage: require('../../assets/planets/ascendente.png'),
+            signName: 'Ascendente:',
+            signDetail: astroData ? capitalizeSign(astroData.Ascendant) : 'Detalhes não disponíveis',
+            signDescription: 'O Ascendente, ou signo ascendente, representa a maneira como você se apresenta ao mundo exterior e como os outros te veem. É a "máscara" que você usa e influencia sua aparência e comportamento exterior.'
         },
         {
             id: '4',
-            signImage: require('../../assets/planets/marte.png'),
-            signName: 'Marte:',
-            signDetail: astroData ? astroData.Mars : 'Detalhes não disponíveis',
-            signDescription: 'Associado à comunicação, raciocínio e aprendizado.'
+            signImage: require('../../assets/planets/descendente.png'),
+            signName: 'Descendente:',
+            signDetail: astroData ? capitalizeSign(astroData.Descendant) : 'Detalhes não disponíveis',
+            signDescription: 'O Descendente é o signo oposto ao Ascendente e representa os tipos de relacionamentos e parcerias que você atrai. Ele indica o que você busca nos outros e os desafios que enfrenta em relacionamentos íntimos.'
         },
         {
             id: '5',
-            signImage: require('../../assets/planets/mercurio.png'),
-            signName: 'Mercúrio:',
-            signDetail: astroData ? astroData.Mercury : 'Detalhes não disponíveis',
-            signDescription: 'Associado à comunicação, raciocínio e aprendizado.'
+            signImage: require('../../assets/planets/ic.png'),
+            signName: 'Fundo do Céu (IC):',
+            signDetail: astroData ? capitalizeSign(astroData.IC) : 'Detalhes não disponíveis',
+            signDescription: 'O Fundo do Céu (IC) representa suas raízes, sua família e seu lar. Ele está associado às influências da infância e ao ambiente doméstico, revelando suas fundações emocionais e herança familiar.'
         },
         {
             id: '6',
-            signImage: require('../../assets/planets/netuno.png'),
-            signName: 'Netuno:',
-            signDetail: astroData ? astroData.Neptune : 'Detalhes não disponíveis',
-            signDescription: 'Relacionado a sonhos, intuição e espiritualidade.'
+            signImage: require('../../assets/planets/mc.png'),
+            signName: 'Meio do Céu (MC):',
+            signDetail: astroData ? capitalizeSign(astroData.MC) : 'Detalhes não disponíveis',
+            signDescription: 'O Meio do Céu (MC) representa sua carreira, reputação e aspirações públicas. Está ligado à sua posição social e ao caminho que você segue para alcançar suas ambições e ser reconhecido na sociedade.'
         },
         {
             id: '7',
-            signImage: require('../../assets/planets/plutao.png'),
-            signName: 'Plutão:',
-            signDetail: astroData ? astroData.Pluto : 'Detalhes não disponíveis',
-            signDescription: 'Associado a transformação, poder e regeneração.'
+            signImage: require('../../assets/planets/jupiter.png'),
+            signName: 'Júpiter:',
+            signDetail: astroData ? capitalizeSign(astroData.Jupiter) : 'Detalhes não disponíveis',
+            signDescription: 'Júpiter leva cerca de 12 anos para orbitar o Sol, passando aproximadamente um ano em cada signo do zodíaco. O signo em que Júpiter está posicionado no seu nascimento está associado a como você expressa otimismo, crescimento, expansão e moralidade.'
         },
         {
             id: '8',
-            signImage: require('../../assets/planets/saturn.png'),
-            signName: 'Saturno:',
-            signDetail: astroData ? astroData.Saturn : 'Detalhes não disponíveis',
-            signDescription: 'Ligado a estrutura, responsabilidade e maturidade.'
+            signImage: require('../../assets/planets/marte.png'),
+            signName: 'Marte:',
+            signDetail: astroData ? capitalizeSign(astroData.Mars) : 'Detalhes não disponíveis',
+            signDescription: 'Marte é o planeta da ação, energia e desejo. Representa a maneira como você aborda desafios e busca seus objetivos. Está relacionado à assertividade, competitividade e paixão.'
         },
         {
             id: '9',
-            signImage: require('../../assets/planets/uranu.png'),
-            signName: 'Urano:',
-            signDetail: astroData ? astroData.Uranus : 'Detalhes não disponíveis',
-            signDescription: 'Associado a originalidade, liberdade e mudanças repentinas.'
+            signImage: require('../../assets/planets/mercurio.png'),
+            signName: 'Mercúrio:',
+            signDetail: astroData ? capitalizeSign(astroData.Mercury) : 'Detalhes não disponíveis',
+            signDescription: 'Mercúrio rege a comunicação, o pensamento lógico e a inteligência. O signo em que Mercúrio está posicionado revela como você processa informações, se comunica e aprende.'
         },
         {
             id: '10',
+            signImage: require('../../assets/planets/netuno.png'),
+            signName: 'Netuno:',
+            signDetail: astroData ? capitalizeSign(astroData.Neptune) : 'Detalhes não disponíveis',
+            signDescription: 'Netuno está associado à intuição, sonhos e espiritualidade. Representa a sensibilidade, a imaginação e a capacidade de transcender a realidade cotidiana para explorar o mundo espiritual e artístico.'
+        },
+        {
+            id: '11',
+            signImage: require('../../assets/planets/plutao.png'),
+            signName: 'Plutão:',
+            signDetail: astroData ? capitalizeSign(astroData.Pluto) : 'Detalhes não disponíveis',
+            signDescription: 'Plutão simboliza transformação, poder e regeneração. Ele representa os processos de morte e renascimento, mudanças profundas e o desejo de controlar e influenciar o ambiente ao redor.'
+        },
+        {
+            id: '12',
+            signImage: require('../../assets/planets/saturn.png'),
+            signName: 'Saturno:',
+            signDetail: astroData ? capitalizeSign(astroData.Saturn) : 'Detalhes não disponíveis',
+            signDescription: 'Saturno está ligado à disciplina, responsabilidade e estrutura. Ele desafia você a crescer, enfrentar seus medos e construir uma base sólida para o futuro. Está associado à maturidade e ao cumprimento de deveres.'
+        },
+        {
+            id: '13',
+            signImage: require('../../assets/planets/uranu.png'),
+            signName: 'Urano:',
+            signDetail: astroData ? capitalizeSign(astroData.Uranus) : 'Detalhes não disponíveis',
+            signDescription: 'Urano é o planeta da inovação, originalidade e mudança repentina. Ele governa a individualidade, a liberdade pessoal e a capacidade de romper com as tradições para explorar novas possibilidades.'
+        },
+        {
+            id: '14',
             signImage: require('../../assets/planets/venus.png'),
             signName: 'Vênus:',
-            signDetail: astroData ? astroData.Venus : 'Detalhes não disponíveis',
-            signDescription: 'Relacionado ao amor, beleza, prazer e valores.'
+            signDetail: astroData ? capitalizeSign(astroData.Venus) : 'Detalhes não disponíveis',
+            signDescription: 'Vênus está relacionada ao amor, beleza e prazer. Ela governa a maneira como você expressa afeto, busca relacionamentos harmoniosos e aprecia as coisas belas e agradáveis da vida.'
         },
-        
     ];
-    const [state, setState] = useState({ currentSelectedSignId: signsList[3].id, })
 
-    const updateState = (data) => setState((state) => ({ ...state, ...data }))
+    const [state, setState] = useState({ currentSelectedSignId: signsList[3].id });
+
+    const updateState = (data) => setState((state) => ({ ...state, ...data }));
 
     const { currentSelectedSignId } = state;
 
@@ -99,7 +145,6 @@ const AstralMap = ({ navigation, route }) => {
         setModalVisible(false);
     };
 
-    
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
             <StatusBar backgroundColor={Colors.secondaryColor} />
@@ -130,7 +175,7 @@ const AstralMap = ({ navigation, route }) => {
                             <MaterialIcons
                                 name="close"
                                 size={24}
-                                color="black" // Ou outra cor de sua escolha
+                                color="black"
                                 onPress={closeModal}
                                 style={styles.closeIcon}
                             />
@@ -140,12 +185,10 @@ const AstralMap = ({ navigation, route }) => {
                 </View>
             </Modal>
             <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-                    <Text style={styles.buttonText}>Voltar</Text>
+                <Text style={styles.buttonText}>Voltar</Text>
             </TouchableOpacity>
         </SafeAreaView>
-    )
-
-
+    );
 
     function signs() {
         const handlePress = (item) => {
@@ -160,28 +203,28 @@ const AstralMap = ({ navigation, route }) => {
                 style={[
                     styles.signItemStyle,
                     currentSelectedSignId === item.id && isModalVisible && styles.selectedSignItemStyle,
-                    index === signsList.length - 1 && styles.lastItemStyle // Adiciona um estilo diferente para o último item
+                    index === signsList.length - 1 && styles.lastItemStyle
                 ]}
             >
-            <Image
-                source={item.signImage}
-                style={styles.signImageStyle}
-            />
-            <View style={styles.signTextWrapStyle}>
-                <Text style={[
-                    styles.signNameTextStyle,
-                    currentSelectedSignId === item.id && isModalVisible && styles.selectedSignTextStyle
-                ]}>
-                    {item.signName}
-                </Text>
-                <Text style={[
-                    styles.signDetailTextStyle,
-                    currentSelectedSignId === item.id && isModalVisible && styles.selectedSignTextStyle
-                ]}>
-                    {item.signDetail}
-                </Text>
-            </View>
-        </TouchableOpacity>
+                <Image
+                    source={item.signImage}
+                    style={styles.signImageStyle}
+                />
+                <View style={styles.signTextWrapStyle}>
+                    <Text style={[
+                        styles.signNameTextStyle,
+                        currentSelectedSignId === item.id && isModalVisible && styles.selectedSignTextStyle
+                    ]}>
+                        {item.signName}
+                    </Text>
+                    <Text style={[
+                        styles.signDetailTextStyle,
+                        currentSelectedSignId === item.id && isModalVisible && styles.selectedSignTextStyle
+                    ]}>
+                        {item.signDetail}
+                    </Text>
+                </View>
+            </TouchableOpacity>
         );
     
         return (
@@ -194,16 +237,15 @@ const AstralMap = ({ navigation, route }) => {
                     contentContainerStyle={styles.signsListContentStyle}
                 />
             </View>
-        )
+        );
     }
-
 
     function header() {
         return (
             <ImageBackground
-                source={require('../../assets/images/bg1.jpg')} // Substitua pelo caminho correto da sua imagem
+                source={require('../../assets/images/bg1.jpg')}
                 style={styles.headerWrapStyle}
-                resizeMode="cover" // Isso garante que a imagem cubra todo o espaço disponível
+                resizeMode="cover"
             >
                 <View style={{ flexDirection: 'row', }}>
                     <View style={{ marginLeft: Sizes.fixPadding - 5.0, }}>
@@ -213,9 +255,8 @@ const AstralMap = ({ navigation, route }) => {
                     </View>
                 </View>
             </ImageBackground>
-        )
+        );
     }
-
 }
 
 const styles = StyleSheet.create({
@@ -223,7 +264,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo escurecido para o modal
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalView: {
         margin: 20,
@@ -239,28 +280,26 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        width: '80%' // Ajuste a largura conforme necessário
+        width: '80%'
     },
     modalHeader: {
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingBottom: 10 // Espaço entre o cabeçalho e o conteúdo do modal
+        paddingBottom: 10
     },
     modalTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: Colors.secondaryColor // Cor do título
+        color: Colors.secondaryColor
     },
     modalText: {
         fontSize: 16,
-        color: 'black', // Cor do texto
+        color: 'black',
         textAlign: 'center'
     },
-    closeIcon: {
-        // Estilos adicionais para o ícone de fechar, se necessário
-    },
+    closeIcon: {},
     headerWrapStyle: {
         paddingHorizontal: Sizes.fixPadding * 2.0,
         paddingVertical: Sizes.fixPadding * 3.0,
@@ -279,25 +318,23 @@ const styles = StyleSheet.create({
     signItemStyle: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center', 
-        paddingVertical: Sizes.fixPadding, // Você pode ajustar o padding conforme necessário
-        paddingHorizontal: Sizes.fixPadding * 2.0, // Ajuste conforme necessário para a centralização
+        justifyContent: 'center',
+        paddingVertical: Sizes.fixPadding,
+        paddingHorizontal: Sizes.fixPadding * 2.0,
         borderBottomWidth: 1,
         borderBottomColor: '#E0E0E0',
-        },
+    },
     selectedSignItemStyle: {
-        backgroundColor: Colors.secondaryColor // Cor do background do header
+        backgroundColor: Colors.secondaryColor
     },
     selectedSignTextStyle: {
-        color: Colors.whiteColor, // Texto branco para o item selecionado
+        color: Colors.whiteColor,
     },
-    signImageStyle: {
-        // Estilos para a imagem, se necessário
-    },
+    signImageStyle: {},
     signTextWrapStyle: {
         flex: 1,
         marginLeft: Sizes.fixPadding,
-        alignItems: 'center', // Centraliza o conteúdo verticalmente
+        alignItems: 'center',
     },
     signNameTextStyle: {
         ...Fonts.blackColor14Medium,
@@ -305,18 +342,15 @@ const styles = StyleSheet.create({
     signDetailTextStyle: {
         ...Fonts.grayColor10Regular,
     },
-    signsListWrapStyle: {
-     // Estilos para o envoltório da lista, se necessário
-    },
+    signsListWrapStyle: {},
     signsListContentStyle: {
         paddingBottom: Sizes.fixPadding,
     },
     signImageStyle: {
-        width: 40, // tamanho reduzido
-        height: 40, // tamanho reduzido
+        width: 40,
+        height: 40,
         resizeMode: 'contain',
     },
-
     button: {
         backgroundColor: '#003366',
         borderRadius: 4,
@@ -325,16 +359,15 @@ const styles = StyleSheet.create({
         marginTop: 12,
         alignItems: 'center',
         justifyContent: 'center'
-      },
-      buttonText: {
+    },
+    buttonText: {
         fontSize: 18,
         color: '#fff',
         fontWeight: 'bold',
-      },
-      lastItemStyle: {
-        borderBottomWidth: 0 // Remove a linha de demarcação
     },
-
+    lastItemStyle: {
+        borderBottomWidth: 0
+    },
 });
 
 export default AstralMap;
