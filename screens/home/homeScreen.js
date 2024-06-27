@@ -193,7 +193,7 @@ const HomeScreen = ({ navigation, name }) => {
 
         return (
             <View style={{ marginHorizontal: space_x }}>
-                <Text style={{ marginTop: 5, marginHorizontal: Sizes.fixPadding * 1.0, marginBottom: space_x, ...Fonts.blackColor16Bold }}>
+                <Text style={{ marginTop: 10, marginHorizontal: Sizes.fixPadding * 1.0, marginBottom: space_x, ...Fonts.blackColor16Bold }}>
                     Horóscopos
                 </Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
