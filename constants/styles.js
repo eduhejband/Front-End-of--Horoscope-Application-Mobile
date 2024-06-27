@@ -164,8 +164,8 @@ export const Fonts = {
     },
 
     grayColor12Regular: {
-        color: '#9E9E9E',
-        fontSize: 12,
+        color: '#00000',
+        fontSize: 15,
         fontFamily: 'Hahmlet_Regular'
     },
 

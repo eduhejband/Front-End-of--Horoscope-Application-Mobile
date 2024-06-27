@@ -295,9 +295,9 @@ const styles = StyleSheet.create({
         color: Colors.secondaryColor
     },
     modalText: {
-        fontSize: 16,
-        color: 'black',
-        textAlign: 'center'
+        color: '#00000',
+        fontSize: 15,
+        fontFamily: 'Hahmlet_Regular'
     },
     closeIcon: {},
     headerWrapStyle: {
