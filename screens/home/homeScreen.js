@@ -76,7 +76,7 @@ const HomeScreen = ({ navigation, name }) => {
             "Retornar",
             "Você realmente deseja retornar para o início?",
             [
-                { text: "Cancelar", onPress: () => console.log("Cancel Pressed"), style: "cancel" },
+                { text: "Cancelar", style: "cancel" },
                 { text: "Confirmar", onPress: () => navigation.navigate('Onboarding') }
             ],
             { cancelable: false }
@@ -88,7 +88,7 @@ const HomeScreen = ({ navigation, name }) => {
             "Atualizar Dados",
             "Deseja atualizar seus dados?",
             [
-                { text: "Cancelar", onPress: () => console.log("Cancel Pressed"), style: "cancel" },
+                { text: "Cancelar", style: "cancel" },
                 { text: "Confirmar", onPress: () => navigation.navigate('Update') }
             ],
             { cancelable: false }
@@ -107,7 +107,7 @@ const HomeScreen = ({ navigation, name }) => {
                 "Apagar Registro",
                 "Tem certeza de que deseja apagar seu registro?",
                 [
-                    { text: "Cancelar", onPress: () => console.log("Cancel Pressed"), style: "cancel" },
+                    { text: "Cancelar", style: "cancel" },
                     { text: "Confirmar", onPress: async () => {
                         try {
                             const userId = await AsyncStorage.getItem('userId');
