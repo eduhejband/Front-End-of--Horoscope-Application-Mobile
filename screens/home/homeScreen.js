@@ -117,7 +117,6 @@ const HomeScreen = ({ navigation, name }) => {
                                         'Authorization': 'Bearer VYFv1RodXIH4hMDjn8UpcWvfsEwyD7Dq6XV4wS3bNWyzU4V0ndnR7dxiBJVxTnvPLbIqyzWwlByECbeRr6nMDNpAbHyz7rAGAY1w54E09OjD0vPTDuHI2j2CHbIqaefPRfD3MyvBqQLu4F21trvA03uYgVHQJThwkl5Jc0dBCiATRrjCwQJeFUZF0KZImBdGCdhZ4bAF7J8JMSnFIpCooHKIv2VgsYptp80MJ6VPGRwdPZ7nFwt1Twzxp6znnSJi'
                                     }
                                 });
-                                console.log('Resposta da API para exclusão do usuário:', response.data);
 
                                 if (response.status === 200) {
                                     Alert.alert('Sucesso', 'Seu registro foi apagado com sucesso.');

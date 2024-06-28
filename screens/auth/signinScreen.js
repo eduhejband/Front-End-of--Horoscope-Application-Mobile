@@ -230,13 +230,9 @@ export default function SigninScreen({ navigation }) {
                 timeout(30000)
             ]);
 
-            console.log("Resposta da API de registro:", registerResponse);
-
             if (registerResponse) {
-                console.log("Navegando para BottomTabBar.");
                 navigation.navigate('BottomTabBar', { name });
             } else {
-                console.log("Erro: Falha no registro.");
                 Alert.alert('Erro', 'Não foi possível completar o registro. Por favor, tente novamente.');
                 setIsLoading(false);
                 return;

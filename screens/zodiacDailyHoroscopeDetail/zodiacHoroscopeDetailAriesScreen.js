@@ -1,16 +1,10 @@
 import React, { useState } from "react";
 import { SafeAreaView, View, Dimensions, ScrollView, TouchableOpacity, StatusBar, Image, StyleSheet, Text } from "react-native";
 import { Colors, Fonts, Sizes, } from "../../constants/styles";
-import { MaterialIcons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import { ImageBackground } from 'react-native';
-import { Svg } from 'react-native-svg';
 
 const { width, height } = Dimensions.get('window');
-
-const luckyColorsList = ['white', 'yellow', 'green'];
-const luckyFlowersList = ['tulip', 'moming', 'glory', 'peach blossom'];
 
 function range(start, end) {
     return Array(end - start + 1).fill().map((_, idx) => start + idx)

@@ -37,11 +37,7 @@ const OnboardingScreen = ({ navigation }) => {
             const userId = await AsyncStorage.getItem('userId');
             const name = await AsyncStorage.getItem('name');
     
-            console.log("Recuperado userId do AsyncStorage:", userId);
-            console.log("Recuperado name do AsyncStorage:", name);
-    
             if (!userId || !name) {
-                console.log("UserId ou name não encontrados no AsyncStorage.");
                 navigation.navigate('Signin');
                 return;
             }
@@ -56,14 +52,10 @@ const OnboardingScreen = ({ navigation }) => {
                 }
             );
     
-            console.log("Resposta da API para verificação do usuário:", response.data);
-    
             // Verifica o status da resposta e a mensagem retornada
             if (response.status === 200 && response.data.message === "Ultimo acesso atualizado com sucesso") {
-                console.log('ID encontrado no banco e último login atualizado.');
                 navigation.navigate('BottomTabBar', { name });
             } else {
-                console.log('ID não encontrado no banco.');
                 navigation.navigate('Signin');
             }
         } catch (error) {

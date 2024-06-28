@@ -193,14 +193,10 @@ export default function UpdateDataScreen({ navigation }) {
                 timeout(30000)
             ]);
 
-            console.log("Resposta da API de atualização:", updateResponse);
-
             if (updateResponse) {
-                console.log("Dados atualizados com sucesso.");
                 Alert.alert('Sucesso', 'Seus dados foram atualizados com sucesso.');
                 navigation.navigate('BottomTabBar', { name });
             } else {
-                console.log("Erro: Falha na atualização.");
                 Alert.alert('Erro', 'Não foi possível completar a atualização. Por favor, tente novamente.');
                 setIsLoading(false);
                 return;
