@@ -60,7 +60,7 @@ const OnboardingScreen = ({ navigation }) => {
             }
         } catch (error) {
             console.error('Erro ao tentar fazer login: ', error);
-            Alert.alert('Erro', `Erro ao tentar fazer login: ${error.message}`);
+            Alert.alert('Erro', `Erro ao tentar fazer login, por favor refaça o cadastro`);
             navigation.navigate('Signin');
         } finally {
             setIsLoading(false);
