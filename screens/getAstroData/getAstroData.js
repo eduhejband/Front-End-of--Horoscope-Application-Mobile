@@ -13,7 +13,6 @@ export const checkUserIdExistence = async (userId) => {
         // Verifica se o status é 200 (OK)
         return response.status === 200;
     } catch (error) {
-        console.error('Erro ao verificar existência do ID do usuário:', error);
         return false; // Em caso de erro, assume que o ID não existe
     }
 };
