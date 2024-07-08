@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ImageBackground, View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { ImageBackground, View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Linking } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { TextInputMask } from 'react-native-masked-text';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { registerAstroData, checkUserIdExistence } from '../getAstroData/getAstroData'; // Importar checkUserIdExistence
+import { registerAstroData, checkUserIdExistence } from '../getAstroData/getAstroData';
 import NetInfo from '@react-native-community/netinfo';
+import { CheckBox } from 'react-native-elements';
 import 'react-native-get-random-values';
 
 export default function SigninScreen({ navigation }) {
@@ -21,8 +22,8 @@ export default function SigninScreen({ navigation }) {
     const [birthTime, setBirthTime] = useState('');
     const [birthTimeValidation, setBirthTimeValidation] = useState(null);
     const [isCheckingBirthTime, setIsCheckingBirthTime] = useState(false);
+    const [isTermsAccepted, setIsTermsAccepted] = useState(false);
 
-    // Validação de data
     const isValidDate = (d) => d instanceof Date && !isNaN(d);
     const isFutureDate = (date) => date > new Date();
     const isValidDayForMonth = (day, month, year) => {
@@ -166,7 +167,6 @@ export default function SigninScreen({ navigation }) {
     async function handleRegister() {
         setIsLoading(true);
 
-        // Verificar conexão com a internet
         const state = await NetInfo.fetch();
         if (!state.isConnected) {
             Alert.alert('Sem Conexão', 'Por favor, verifique sua conexão com a internet e tente novamente.');
@@ -174,8 +174,8 @@ export default function SigninScreen({ navigation }) {
             return;
         }
 
-        if (!name || birthplaceValidation === false || !birthplace || !birthDate || birthDateValidation === false) {
-            Alert.alert('Campos obrigatórios', 'Por favor, preencha os campos corretamente.');
+        if (!name || birthplaceValidation === false || !birthplace || !birthDate || birthDateValidation === false || !isTermsAccepted) {
+            Alert.alert('Campos obrigatórios', 'Por favor, preencha os campos corretamente e aceite os termos.');
             setIsLoading(false);
             return;
         }
@@ -223,7 +223,7 @@ export default function SigninScreen({ navigation }) {
 
             await AsyncStorage.removeItem('userId');
             await AsyncStorage.setItem('userId', userId.toString());
-            await AsyncStorage.setItem('name', name); // Salvando o name no AsyncStorage
+            await AsyncStorage.setItem('name', name);
 
             const registerResponse = await Promise.race([
                 registerAstroData(userData),
@@ -315,10 +315,29 @@ export default function SigninScreen({ navigation }) {
                     {birthTimeValidation === true && <Text style={styles.messageValid}>Horário válido.</Text>}
                     {birthTimeValidation === false && <Text style={styles.messageInvalid}>Por favor, insira um horário válido ou deixe em branco.</Text>}
 
+                    <View style={styles.checkboxContainer}>
+                        <CheckBox
+                            checked={isTermsAccepted}
+                            onPress={() => setIsTermsAccepted(!isTermsAccepted)}
+                            containerStyle={styles.checkbox}
+                            checkedColor="#003366"
+                        />
+                        <Text style={styles.label}>
+                            Eu li e aceito os{' '}
+                            <Text style={styles.link} onPress={() => Linking.openURL('https://online.fliphtml5.com/jqaqj/zxlt/')}>
+                                Termos de Uso
+                            </Text>{' '}
+                            e a{' '}
+                            <Text style={styles.link} onPress={() => Linking.openURL('https://online.fliphtml5.com/jqaqj/tzfo/#p=1')}>
+                                Política de Privacidade
+                            </Text>
+                        </Text>
+                    </View>
+
                     <TouchableOpacity
-                        style={[styles.button, (isLoading || isCheckingBirthplace || isCheckingBirthDate || isCheckingBirthTime || birthplaceValidation === false || birthDateValidation === false || birthTimeValidation === false) ? styles.buttonLoading : {}]}
+                        style={[styles.button, (isLoading || isCheckingBirthplace || isCheckingBirthDate || isCheckingBirthTime || birthplaceValidation === false || birthDateValidation === false || birthTimeValidation === false || !isTermsAccepted) ? styles.buttonLoading : {}]}
                         onPress={handleRegister}
-                        disabled={isLoading || isCheckingBirthplace || isCheckingBirthDate || isCheckingBirthTime || birthplaceValidation === false || birthDateValidation === false || birthTimeValidation === false}
+                        disabled={isLoading || isCheckingBirthplace || isCheckingBirthDate || isCheckingBirthTime || birthplaceValidation === false || birthDateValidation === false || birthTimeValidation === false || !isTermsAccepted}
                     >
                         <Text style={styles.buttonText}>
                             {isLoading || isCheckingBirthplace || isCheckingBirthDate || isCheckingBirthTime ? 'Aguarde...' : 'Prosseguir'}
@@ -426,5 +445,22 @@ const styles = StyleSheet.create({
     messageInvalid: {
         color: 'red',
         fontSize: 12
+    },
+    checkboxContainer: {
+        flexDirection: 'row',
+        marginVertical: 15,
+        alignItems: 'center',
+    },
+    checkbox: {
+        marginRight: 10,
+        padding: 0,
+    },
+    label: {
+        flex: 1,
+        fontSize: 14,
+    },
+    link: {
+        color: '#003366',
+        textDecorationLine: 'underline',
     }
 });
