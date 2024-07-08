@@ -140,46 +140,45 @@ export default function UpdateDataScreen({ navigation }) {
 
     async function handleUpdate() {
         setIsLoading(true);
-
-        // Verificar conexão com a internet
+    
         const state = await NetInfo.fetch();
         if (!state.isConnected) {
             Alert.alert('Sem Conexão', 'Por favor, verifique sua conexão com a internet e tente novamente.');
             setIsLoading(false);
             return;
         }
-
+    
         if (!name || birthplaceValidation === false || !birthplace || !birthDate || birthDateValidation === false || !isTermsAccepted) {
             Alert.alert('Campos obrigatórios', 'Por favor, preencha os campos corretamente e aceite os termos.');
             setIsLoading(false);
             return;
         }
-
+    
         if (isCheckingBirthplace || isCheckingBirthDate || isCheckingBirthTime) {
             Alert.alert('Aguarde', 'Por favor, aguarde as verificações.');
             setIsLoading(false);
             return;
         }
-
+    
         if (birthplaceValidation === false) {
             Alert.alert('Erro', 'Por favor, digite um local de nascimento válido.');
             setIsLoading(false);
             return;
         }
-
+    
         if (birthTimeValidation === false) {
             Alert.alert('Erro', 'Por favor, insira um horário válido ou deixe o campo vazio.');
             setIsLoading(false);
             return;
         }
-
+    
         const birthDateParts = birthDate.split('/');
         const formattedBirthDate = `${birthDateParts[0]}.${birthDateParts[1]}.${birthDateParts[2]}`;
         const formattedBirthplace = birthplace.split(',').map(item => item.trim()).join('.');
         const formattedBirthTime = birthTime || '12:00';
-
+    
         const userId = await AsyncStorage.getItem('userId'); // Obter userId do AsyncStorage
-
+    
         const userData = {
             id: userId,
             name: name,
@@ -187,16 +186,17 @@ export default function UpdateDataScreen({ navigation }) {
             hora_nascimento: formattedBirthTime,
             cidade_nascimento: formattedBirthplace
         };
-
+    
         try {
             const updateResponse = await Promise.race([
                 updateAstroData(userData),
                 timeout(30000)
             ]);
-
+    
             if (updateResponse) {
+                await AsyncStorage.setItem('name', name); // Salvar o nome atualizado no AsyncStorage
                 Alert.alert('Sucesso', 'Seus dados foram atualizados com sucesso.');
-                navigation.navigate('BottomTabBar', { name });
+                navigation.navigate('BottomTabBar', { name: name });
             } else {
                 Alert.alert('Erro', 'Não foi possível completar a atualização. Por favor, tente novamente.');
                 setIsLoading(false);
@@ -214,6 +214,7 @@ export default function UpdateDataScreen({ navigation }) {
             setIsLoading(false);
         }
     }
+    
 
     function timeout(ms) {
         return new Promise((resolve, reject) => {

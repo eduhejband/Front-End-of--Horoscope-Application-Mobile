@@ -25,6 +25,13 @@ const BottomTabBarScreen = ({ navigation, route }) => {
         fetchName();
     }, [name]);
 
+    useEffect(() => {
+        if (route.params?.name) {
+            setName(route.params.name);
+            AsyncStorage.setItem('name', route.params.name); // Atualiza o AsyncStorage quando o parâmetro de navegação mudar
+        }
+    }, [route.params?.name]);
+
     const backAction = () => {
         backClickCount === 1 ? BackHandler.exitApp() : _spring();
         return true;
