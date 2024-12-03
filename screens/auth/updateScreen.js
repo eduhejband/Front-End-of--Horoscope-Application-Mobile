@@ -58,10 +58,10 @@ export default function UpdateDataScreen({ navigation }) {
         }
     };
 
-    const checkBirthplaceValidity = async (place) => {
+    const checkBirthplaceValidity = async () => {
         setIsCheckingBirthplace(true);
         try {
-            const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${place}&format=json`);
+            const response = await fetch(process.env.API_NOMINATIM);
             const data = await response.json();
             setBirthplaceValidation(data && data.length > 0);
         } catch (error) {
@@ -290,11 +290,11 @@ export default function UpdateDataScreen({ navigation }) {
                         />
                         <Text style={styles.label}>
                             Eu li e aceito os{' '}
-                            <Text style={styles.link} onPress={() => Linking.openURL('https://online.fliphtml5.com/jqaqj/zxlt/')}>
+                            <Text style={styles.link} onPress={() => Linking.openURL('https://online.fliphtml5.com')}>
                                 Termos de Uso
                             </Text>{' '}
                             e a{' '}
-                            <Text style={styles.link} onPress={() => Linking.openURL('https://online.fliphtml5.com/jqaqj/tzfo/#p=1')}>
+                            <Text style={styles.link} onPress={() => Linking.openURL('https://online.fliphtml5.com')}>
                                 Política de Privacidade
                             </Text>
                         </Text>

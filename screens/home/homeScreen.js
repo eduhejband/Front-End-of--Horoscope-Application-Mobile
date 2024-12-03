@@ -48,9 +48,9 @@ const HomeScreen = ({ navigation, name }) => {
         try {
             const userId = await AsyncStorage.getItem('userId');
             if (userId) {
-                const response = await axios.get(`https://serverdados-8805a7170f22.herokuapp.com/data/get_astro_data/${userId}`, {
+                const response = await axios.get(`API/data/get_astro_data/${userId}`, {
                     headers: {
-                        'Authorization': 'Bearer RVj46uupo0TEO5QvWkfXYdfnpOs98xYfo8dbSwAdLKZSfb1A3b4S0OqSzUlQeQ5X4yBZbOGaSJzIilF2QkPs8ACqAQLJwHvxn1kvYwYcg0zlyCEByGXBbbeJ41uC2kCCEsSfmh4kYnG81F7VMGuBxpVmCS8uPA4njUSA4XC7ufIBRoZF7Ncf4raPc5H1qXgBFpOtxWJQkp9jnNENeUP86VLTIQuRckKP69bbyPrxFU2APzZDClPPEXWJcvjhJcqG'
+                        'Authorization': 'Bearer '
                     }
                 });
                 if (response.data) {
@@ -112,9 +112,9 @@ const HomeScreen = ({ navigation, name }) => {
                         try {
                             const userId = await AsyncStorage.getItem('userId');
                             if (userId) {
-                                const response = await axios.delete(`https://serverdados-8805a7170f22.herokuapp.com/delete/delete_user/${userId}`, {
+                                const response = await axios.delete(`API/delete/delete_user/${userId}`, {
                                     headers: {
-                                        'Authorization': 'Bearer VYFv1RodXIH4hMDjn8UpcWvfsEwyD7Dq6XV4wS3bNWyzU4V0ndnR7dxiBJVxTnvPLbIqyzWwlByECbeRr6nMDNpAbHyz7rAGAY1w54E09OjD0vPTDuHI2j2CHbIqaefPRfD3MyvBqQLu4F21trvA03uYgVHQJThwkl5Jc0dBCiATRrjCwQJeFUZF0KZImBdGCdhZ4bAF7J8JMSnFIpCooHKIv2VgsYptp80MJ6VPGRwdPZ7nFwt1Twzxp6znnSJi'
+                                        'Authorization': 'Bearer '
                                     }
                                 });
 

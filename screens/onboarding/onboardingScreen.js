@@ -43,11 +43,11 @@ const OnboardingScreen = ({ navigation }) => {
             }
     
             const response = await axios.post(
-                `https://serverdados-8805a7170f22.herokuapp.com/last_login/last_astro_data/${userId}`,
+                `API/last_login/last_astro_data/${userId}`,
                 null,
                 {
                     headers: {
-                        'Authorization': 'Bearer sOMx3opuNm2e26BqKNNiVgsUmWISjVWkyQJGkKmGpvZNFibmoN2uxe3FCCfGSt7vbK9JFNLvm607zyjN7RHTV64Z2pK7sDgbjTegM8I10poSRpzNkApyCu0XtHIQIMrqNN8Us8c40CI3sX9Eo0RKylOV2Lt80dJckgQGec47YcIdTSivy3nU0R7KW5PbMi5OsuwEu0bZRAK818xcOepft4c4v2dIxWRNPEY7TtliPObSiVa7Zs266658b33d6568'
+                        'Authorization': 'Bearer '
                     }
                 }
             );
